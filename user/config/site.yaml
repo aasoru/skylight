@@ -1,0 +1,58 @@
+title: 'SkyLight Productions'
+default_lang: es
+author:
+  name: 'Aarón Sosa'
+  email: aasoru@gmail.com
+taxonomies:
+  - category
+  - tag
+metadata:
+  description: 'Skylight Productions Filmmakers'
+summary:
+  enabled: true
+  format: short
+  size: 300
+  delimiter: '==='
+redirects: null
+routes: null
+blog:
+  route: /blog
+header:
+  title: 'This is SkyLight Productions'
+  description: 'WE ARE BETTER, WE ARE LIGHTED'
+  #description: 'WE ARE BETTER, WE ARE LIGHTED I''m a Manila based <span>graphic designer</span>, <span>illustrator</span> and <span>webdesigner</span> creating awesome and effective visual identities for companies of all sizes around the globe. Let''s <a class="smoothscroll" href="#about">start scrolling</a> and learn more <a class="smoothscroll" href="#about">about me</a>.'
+copyright:
+  -
+    line: 'SkyLight Productions - Tenerife'
+  -
+    line: 'Design by <a title="https://aaronsosa.org" href="http://www.aaronsosa.com/">Aarón S.</a>'
+social:
+  -
+    url: '#'
+    icon: facebook
+  -
+    url: '#'
+    icon: twitter
+  #-
+  #  url: '#'
+  #  icon: google-plus
+  -
+    url: '#'
+    icon: linkedin
+  -
+    url: '#'
+    icon: instagram
+  #-
+  #  url: '#'
+  #  icon: dribbble
+  #-
+  #  url: '#'
+  #  icon: skype
+twitter:
+  id: '657554810648948736'
+  domId: tw-widget1
+  maxTweets: 3
+  enableLinks: 'true'
+  showInteraction: 'false'
+  showImages: 'false'
+  showUser: 'false'
