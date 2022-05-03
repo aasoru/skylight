@@ -1,13 +1,13 @@
-name: Ceevee Site
-version: 1.1.0
-description: "Ceevee is a clean, modern, fully responsive site template for your resume and portfolio."
-icon: group
+name: Skylight
+description: "Grav skeleton for skylight theme, a Grav theme based on Mache HTML theme by freetemplates.pro, original PSD design by symu.co."
+version: 1.0.0
+icon: empire
 author:
-  name: Team Grav
-  email: devs@getgrav.org
-  url: http://getgrav.org
-homepage: https://github.com/getgrav/grav-skeleton-ceevee-site
-demo: http://demo.getgrav.org/ceevee-skeleton
-keywords: ceevee, skeleton, scroll, page, modular
-bugs: https://github.com/getgrav/grav-skeleton-ceevee-site/issues
-license: Free
+  name: Aarón Sosa
+  email: aasoru@gmail.com
+  url: https://aaronsosa.org
+homepage: https://github.com/aasoru
+demo: https://github.com/aasoru
+keywords: skylight, theme, template, responsive, html5, css3, one, single, page, bootstrap
+bugs: https://github.com/aasoru
+license: MIT

@@ -1,0 +1,23 @@
+enabled: true
+favicon:
+  user/themes/skylight/images/favicon.png:
+    name: favicon.png
+    type: image/png
+    size: 1177
+    path: user/themes/skylight/images/favicon.png
+logo:
+  user/themes/skylight/images/logo.png:
+    name: logo.png
+    type: image/png
+    size: 9646
+    path: user/themes/skylight/images/logo.png
+left_footer: '&copy; 2022 COPYRIGHT - SkyLight Films'
+right_footer: 'DESIGNED BY <a href="https://aaronsosa.org">Aaron S.</a>'
+blog_thumbnail_width: 600
+blog_thumbnail_height: 450
+default_background_image:
+  user/themes/skylight/images/main_bg.jpg:
+    name: main_bg.jpg
+    type: image/jpeg
+    size: 470814
+    path: user/themes/skylight/images/main_bg.jpg
