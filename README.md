@@ -31,6 +31,14 @@ The full documentation can be found from [learn.getgrav.org](https://learn.getgr
 
 These are the options to get Grav:
 
+### Start Project
+All you need is this command:
+
+```
+$ /bin/grav server
+```
+
+
 ### Downloading a Grav Package
 
 You can download a **ready-built** package from the [Downloads page on https://getgrav.org](https://getgrav.org/downloads)
