@@ -1,0 +1,11 @@
+state: enabled
+email: admin@admin.com
+fullname: admin
+title: admin
+access:
+  admin:
+    login: true
+    super: true
+  site:
+    login: true
+hashed_password: $2y$10$.fSKdnsIJ4Twvy2Lja5sJOxKb/mn3B5ADi420Vlozjx/AhUwchJEO
