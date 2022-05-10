@@ -9,10 +9,10 @@ content:
         custom:
             - _banner
             - _about
+            - _features
             - _services
             - _testimonials
             - _prices
-            - _features
             - _cta1
             - _updates
             - _cta2

@@ -1,5 +1,5 @@
 ---
-title: 'Our Services'
+title: Services
 menu: 'Our Services'
 services:
     -
@@ -20,6 +20,11 @@ services:
     -
         icon: s1.png
         title: 'GRADING, 3D & VFX '
+published: false
+features:
+    -
+        icon: s1.png
+        title: Hola
+        description: Description
 ---
 
-**Skylight Films** was born with the idea of renting audiovisual services and crew for the production and final execution of your ideas. **You provide the concept, we provide the work.**

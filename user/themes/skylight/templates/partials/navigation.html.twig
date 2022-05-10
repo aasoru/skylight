@@ -1,7 +1,7 @@
 <ul>
 {% if page.template == 'modular' %}
     {% for module in page.collection() if module.header.menu %}
-    <li class="menu-item{% if loop.index == 1 %} active{% endif %}">
+    <li class="menu-item{% if loop.index == 1 %} active{% endif %} text-shadowed">
         <a href="#{{ module.folder|trim('_') }}" data-scroll>{{ module.header.menu }}</a>
     </li>
     {% endfor %}

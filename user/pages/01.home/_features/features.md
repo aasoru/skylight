@@ -1,29 +1,32 @@
 ---
-title: Features
+title: 'Our Services'
 features:
     -
         icon: 1.png
         title: 'ADVERTISING SPOTS'
-        description: 'Lorem ipsum dolor sit amet, adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+        description: 'Ready to take your Brand to the TV, social networks ore ven cinemas we offer you to carry out the production of your idea from the beginning till the end'
     -
         icon: 2.png
         title: PHOTOGRAPHY
-        description: 'Lorem ipsum dolor sit amet, adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+        description: 'You can count on our photography team for events of all kinds, magazine covers, real estate photography, etc.'
     -
         icon: 3.png
         title: VIDEOCLIPS
-        description: 'Lorem ipsum dolor sit amet, adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+        description: ' Both for minor productions such as lyric-videos and for larger projects we offer you the best resolution to accompany your music.'
     -
         icon: 4.png
         title: SHORT-FILMS
-        description: 'Lorem ipsum dolor sit amet, adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+        description: 'If you have an idea or a script and you have always wanted to bring onto the big screen we count with the technical team and all the material it needs to make your dream come true.'
     -
         icon: 5.png
         title: 'WEDDING SPOTS'
-        description: 'Lorem ipsum dolor sit amet, adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+        description: 'We not only cover your wedding potos, but we also offer you to créate a compilation video of your most special day.'
     -
         icon: 6.png
         title: 'GRADING, 3D & VFX'
-        description: 'Lorem ipsum dolor sit amet, adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+        description: 'With more tan 20 years of experience our VFX artista is recognized by many film workers who worked on big projects such as AVATAR or STAR WARS.'
+published: true
+menu: 'Our Services'
 ---
 
+**Skylight Films** was born with the idea of renting audiovisual services and crew for the production and final execution of your ideas. **You provide the concept, we provide the work.**

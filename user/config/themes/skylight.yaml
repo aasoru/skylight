@@ -12,7 +12,7 @@ logo:
     size: 9646
     path: user/themes/skylight/images/logo.png
 left_footer: '&copy; 2022 COPYRIGHT - SkyLight Films'
-right_footer: 'DESIGNED BY <a href="https://aaronsosa.org">Aaron S.</a>'
+right_footer: '<a href="https://aaronsosa.org">DESIGNED BY Aaron S.</a>'
 blog_thumbnail_width: 600
 blog_thumbnail_height: 450
 default_background_image:
