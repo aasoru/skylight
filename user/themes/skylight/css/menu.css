@@ -152,7 +152,7 @@ a:hover {
 }
 
 .nav-collapse a {
- /* -webkit-tap-highlight-color: rgba(0,0,0,0);
+  /*-webkit-tap-highlight-color: rgba(0,0,0,0);
   border-top: 1px solid white;
   text-decoration: none;
   background: #f4421a;
@@ -160,11 +160,12 @@ a:hover {
   color: #fff;
   width: 100%;
   float: left;*/
+  text-decoration: none;
 }
 
 .nav-collapse a:active,
 .nav-collapse .active a {
-color:#ed145b;
+color:#fcb400;
 }
 
 @media screen and (min-width: 767px) {

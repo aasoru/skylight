@@ -62,7 +62,7 @@ span.line {
 	height: 2px;
 	display: block;
 	margin: 30px auto;
-	background: #fcb400;
+	background: #ed145b;
 }
 header,
 .header {
@@ -106,7 +106,7 @@ nav ul li a {
 	color: #fff;
 }
 nav ul li a:hover {
-	color: #fcb400;
+	color: #ed145b;
 	transition: all 0.5s;
 }
 .banner {
@@ -137,21 +137,21 @@ nav ul li a:hover {
 	padding-bottom: 55px;
 }
 .banner a {
-    color: #fcb400;
+    color: #ed145b;
 }
 .banner .button-container a {
 	width: 200px;
 	height: 50px;
 	line-height: 50px;
 	border-radius: 50px;
-	background: #fcb400;
+	background: #ed145b;
 	display: inline-block;
 	color: #fff;
 	font-weight: 700;
 }
 .banner .button-container a:hover {
 	background: #fff;
-	color: #fcb400;
+	color: #ed145b;
 	transition: all 0.4s;
 }
 .video {
@@ -183,7 +183,7 @@ nav ul li a:hover {
 	height: 392px;
 }
 .video a {
-	color: #fcb400;
+	color: #ed145b;
 	text-transform: uppercase;
 	font-weight: 700;
 }
@@ -204,7 +204,7 @@ nav ul li a:hover {
 }
 .services h3 {
 	font-weight: 700;
-	color: #fcb400;
+	color: #ed145b;
 	padding: 15px 0;
 }
 .testimonials {
@@ -274,7 +274,7 @@ nav ul li a:hover {
 	height: 50px;
 	line-height: 50px;
 	border-radius: 50px;
-	background: #fcb400;
+	background: #ed145b;
 	display: block;
 	color: #fff;
 	margin: 20px auto 0px;
@@ -286,21 +286,21 @@ nav ul li a:hover {
 	transition: all 0.4s;
 }
 .price .price-container:hover .black {
-	background: #fcb400;
+	background: #ed145b;
 }
 .features {
 	padding: 140px 0 50px;
 }
 .features h3 {
 	font-weight: 400;
-	color: #fcb400;
+	color: #ed145b;
 }
 .features p {
 	padding: 5px 0 70px;
 }
 .joinnow {
 	padding: 70px 0;
-	background: #fcb400;
+	background: #ed145b;
 }
 .joinnow h2 {
 	color: #fff;
@@ -320,7 +320,7 @@ nav ul li a:hover {
 	line-height: 50px;
 	border-radius: 50px;
 	background: #fff;
-	color: #fcb400;
+	color: #ed145b;
 	text-align: center;
 	font-weight: 700;
 	position: relative;
@@ -391,7 +391,7 @@ nav ul li a:hover {
 }
 a.showmore {
 	font-weight: 400;
-	color: #fcb400;
+	color: #ed145b;
 	display: block;
 	margin: 30px auto 0;
 	background: url(../images/down.png) no-repeat center 100%;
@@ -412,7 +412,7 @@ a.showmore {
 	height: 50px;
 	line-height: 50px;
 	border-radius: 50px;
-	background: #fcb400;
+	background: #ed145b;
 	display: block;
 	color: #fff;
 	margin: 40px auto 0px;
@@ -423,7 +423,7 @@ button.button {
 	border: none;
 	margin: 0;
 }
-.cta2 a:hover{background:#fff; color: #fcb400; transition:all 0.4s;}
+.cta2 a:hover{background:#fff; color: #ed145b; transition:all 0.4s;}
 .cta3{
 	background:#f4f4f4;
 	padding:135px 0 160px;
@@ -448,7 +448,7 @@ footer{
 	font-size:15px;
 }
 footer p a{color:#fff;}
-footer p a:hover{color: #fcb400;}
+footer p a:hover{color: #ed145b;}
 div.rightside{text-align:right;}
 
 
@@ -479,7 +479,7 @@ if it's not present, don't show loader */
  width: 100%;
  height: 100%;
  z-index: 9999;
- background: #fcb400;
+ background: #ed145b;
 }
 
 .box {
@@ -871,12 +871,4 @@ if it's not present, don't show loader */
 /* CUSTOM */
 .text-shadowed{
 	text-shadow: 4px 4px 6px black
-}
-
-.our_work_image img{
-	width:100%
-}
-
-a {
-	text-decoration: none;
 }
