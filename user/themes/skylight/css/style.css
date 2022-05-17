@@ -880,3 +880,76 @@ if it's not present, don't show loader */
 a {
 	text-decoration: none;
 }
+
+.video_bg{
+	position: relative;
+	z-index: 1;
+	margin-top: -48rem;
+}
+
+.video_bg video{
+	width:100%;
+	height: auto;
+	max-height: 100%;
+}
+
+@media only screen and (min-width: 992px) and (max-width: 1200px) {
+	.video_bg {
+		margin-top: -39rem;
+	}
+}
+
+@media only screen and (min-width: 768px) and (max-width: 991px) {
+	.banner {
+		top: 0rem;
+	}
+
+	.video_bg {
+		margin-top: -38.8rem;
+	}
+
+	.video_bg video {
+		height: 90vh !important;
+		object-fit: cover;
+	}
+	
+}
+
+@media only screen and (max-width: 767px) {
+	.banner {
+		top: 2rem;
+	}
+
+	.video_bg {
+		margin-top: -20rem;
+	}
+
+	.video_bg video {
+		height: 70vh !important;
+		object-fit: cover;
+	}
+}
+
+.banner-alt{
+	background-repeat: no-repeat;
+	background-position: bottom center;
+	background-size: cover;
+	padding: 270px 0 270px !important;
+	text-align: center;
+	position: relative;
+	z-index: 100;
+}
+
+@media only screen and (max-width: 767px) {
+	.banner-alt{
+		top:0rem!important;
+		padding: 270px 0 270px !important;
+	}
+	.separation-left {
+		border-left: none !important;
+	}
+}
+
+.separation-left{
+	border-left: 2px #fcb400 solid;
+}
