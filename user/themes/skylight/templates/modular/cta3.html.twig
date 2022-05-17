@@ -1,9 +1,23 @@
 <section class="cta3">
-    <div class="container">
-          <div class="row">
-            <div class="os-animation" data-os-animation="fadeInRight" data-os-animation-delay="0.4s">
+    <div class="container" style="width:100%; margin: auto 0;max-width: 100%;">
+          <div class="row" style="margin-left: 3rem; margin-right: 3rem;">
+            {% if page.header.image %}
+            <div class="col-lg-6 col-sm-6 col-md-6 mb-3">
                 <h2>{{ page.header.title }}</h2>
                 <span class="line"></span>
+
+                {% if page.header.image %}
+                <div class="our_work_image os-animation" data-os-animation="fadeInLeft" data-os-animation-delay="0.4s">
+                    {{ page.media.images[page.header.image].cache.html|raw }}
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-lg-6 col-sm-6 col-md-6 os-animation" data-os-animation="fadeInRight" data-os-animation-delay="0.4s">
+            {% else %}
+            <div class="os-animation" data-os-animation="fadeInRight" data-os-animation-delay="0.4s">
+            {% endif %}
+                <!--<h2>{{ page.header.title }}</h2>
+                <span class="line"></span>-->
                 {{ content|raw }}
                 {% if page.header.button_url %}
                 <a href="{{ page.header.button_url }}">{{ page.header.button_label }}</a>
@@ -11,9 +25,5 @@
             </div>
         </div>
     </div>
-    {% if page.header.image %}
-    <div class="safariimg os-animation" data-os-animation="fadeInLeft" data-os-animation-delay="0.4s">
-        {{ page.media.images[page.header.image].cache.html|raw }}
-    </div>
-    {% endif %}
+    
 </section>

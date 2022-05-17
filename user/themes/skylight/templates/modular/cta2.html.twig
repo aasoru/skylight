@@ -5,7 +5,9 @@
                 <h2>{{ page.header.title }}</h2>
                 <span class="line"></span>
                 {{ content|raw }}
-                <a href="{{ page.header.button_url }}">{{ page.header.button_label }}</a>
+                {% if page.header.button_url %}
+                    <a href="{{ page.header.button_url }}">{{ page.header.button_label }}</a>
+                {% endif %}
             </div>
         </div>
 
