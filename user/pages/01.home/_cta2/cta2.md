@@ -1,7 +1,5 @@
 ---
 title: 'This is how WE do it'
-button_label: 'SHOW MORE'
-button_url: '#'
 background_image: freepsdanner.jpg
 ---
 

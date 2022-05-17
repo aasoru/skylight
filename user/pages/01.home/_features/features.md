@@ -27,6 +27,7 @@ features:
         description: 'With more tan 20 years of experience our VFX artista is recognized by many film workers who worked on big projects such as AVATAR or STAR WARS.'
 published: true
 menu: 'Our Services'
+media_order: '1.png,2.png,3.png,4.png,5.png,6.png,anillos-01.png,anillos-02.png,anillos-03.png,anillos-04.png,anillos-05.png,anillos-06.png'
 ---
 
 **Skylight Films** was born with the idea of renting audiovisual services and crew for the production and final execution of your ideas. **You provide the concept, we provide the work.**
