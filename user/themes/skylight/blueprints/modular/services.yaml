@@ -10,21 +10,21 @@ form:
       fields:
         services:
           type: tab
-          title: THEME_MACHE.SERVICES
+          title: THEME_SKYLIGHT.SERVICES
           fields:
             header.services:
               type: list
-              label: THEME_MACHE.SERVICES
+              label: THEME_SKYLIGHT.SERVICES
               style: vertical
               fields:
                 .icon:
                   type: filepicker
                   folder: '@self'
                   preview_images: true
-                  label: THEME_MACHE.ICON
+                  label: THEME_SKYLIGHT.ICON
                   accept:
                     - .png
                     - .jpg
                 .title:
                   type: text
-                  label: THEME_MACHE.TITLE
+                  label: THEME_SKYLIGHT.TITLE

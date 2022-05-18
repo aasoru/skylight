@@ -10,24 +10,24 @@ form:
       fields:
         features:
           type: tab
-          title: THEME_MACHE.FEATURES
+          title: THEME_SKYLIGHT.FEATURES
           fields:
             header.features:
               type: list
-              label: THEME_MACHE.FEATURES
+              label: THEME_SKYLIGHT.FEATURES
               style: vertical
               fields:
                 .icon:
                   type: filepicker
                   folder: '@self'
                   preview_images: true
-                  label: THEME_MACHE.ICON
+                  label: THEME_SKYLIGHT.ICON
                   accept:
                     - .png
                     - .jpg
                 .title:
                   type: text
-                  label: THEME_MACHE.TITLE
+                  label: THEME_SKYLIGHT.TITLE
                 .description:
                   type: text
-                  label: THEME_MACHE.DESCRIPTION
+                  label: THEME_SKYLIGHT.DESCRIPTION

@@ -14,31 +14,31 @@ form:
           fields:
             header.currency:
               type: text
-              label: THEME_MACHE.CURRENCY
+              label: THEME_SKYLIGHT.CURRENCY
             header.buy_button_label:
               type: text
-              label: THEME_MACHE.BUY_BUTON_LABEL
+              label: THEME_SKYLIGHT.BUY_BUTON_LABEL
             header.prices:
               type: list
-              label: THEME_MACHE.PRICES
+              label: THEME_SKYLIGHT.PRICES
               style: vertical
               fields:
                 .amount:
                   type: text
-                  label: THEME_MACHE.AMOUNT
+                  label: THEME_SKYLIGHT.AMOUNT
                 .interval:
                   type: text
-                  label: THEME_MACHE.INTERVAL
+                  label: THEME_SKYLIGHT.INTERVAL
                 .title:
                   type: text
-                  label: THEME_MACHE.TITLE
+                  label: THEME_SKYLIGHT.TITLE
                 .buy_button_url:
                   type: text
-                  label: THEME_MACHE.BUY_BUTTON_URL
+                  label: THEME_SKYLIGHT.BUY_BUTTON_URL
                 .features:
                   type: list
-                  label: THEME_MACHE.FEATURES
+                  label: THEME_SKYLIGHT.FEATURES
                   fields:
                     .title:
                       type: text
-                      label: THEME_MACHE.TITLE
+                      label: THEME_SKYLIGHT.TITLE

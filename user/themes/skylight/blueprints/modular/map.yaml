@@ -10,20 +10,20 @@ form:
       fields:
         google_maps:
           type: tab
-          title: THEME_MACHE.GOOGLE_MAPS
+          title: THEME_SKYLIGHT.GOOGLE_MAPS
           fields:
             header.latitude:
               type: text
-              label: THEME_MACHE.LATITUDE
+              label: THEME_SKYLIGHT.LATITUDE
             header.longitude:
               type: text
-              label: THEME_MACHE.LONGITUDE
+              label: THEME_SKYLIGHT.LONGITUDE
             header.google_maps_api_key:
               type: text
-              label: THEME_MACHE.GOOGLE_MAPS_API_KEY
+              label: THEME_SKYLIGHT.GOOGLE_MAPS_API_KEY
             header.zoom:
               type: number
-              label: THEME_MACHE.ZOOM
+              label: THEME_SKYLIGHT.ZOOM
               default: 12
               validate:
                 min: 0

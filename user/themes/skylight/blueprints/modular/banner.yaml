@@ -12,18 +12,18 @@ form:
           fields:
             header.heading:
               type: text
-              label: THEME_MACHE.HEADING
+              label: THEME_SKYLIGHT.HEADING
             header.background_image:
               type: filepicker
               folder: '@self'
               preview_images: true
-              label: THEME_MACHE.BACKGROUND_IMAGE
+              label: THEME_SKYLIGHT.BACKGROUND_IMAGE
               accept:
                 - .png
                 - .jpg
             header.button_label:
               type: text
-              label: THEME_MACHE.BUTTON_LABEL
+              label: THEME_SKYLIGHT.BUTTON_LABEL
             header.button_url:
               type: text
-              label: THEME_MACHE.BUTTON_URL
+              label: THEME_SKYLIGHT.BUTTON_URL

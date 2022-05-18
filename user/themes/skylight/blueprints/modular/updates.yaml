@@ -12,16 +12,16 @@ form:
           fields:
             header.blog_route:
               type: pages
-              label: THEME_MACHE.BLOG_ROUTE
+              label: THEME_SKYLIGHT.BLOG_ROUTE
               show_all: false
               show_modular: false
               show_root: false
             header.show_more_label:
               type: text
-              label: THEME_MACHE.SHOW_MORE_LABEL
+              label: THEME_SKYLIGHT.SHOW_MORE_LABEL
             header.blog_post_quantity:
               type: select
-              label: THEME_MACHE.BLOG_POST_QUANTITY
+              label: THEME_SKYLIGHT.BLOG_POST_QUANTITY
               default: 6
               options:
                 '3': '3'

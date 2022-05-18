@@ -10,13 +10,13 @@ form:
       fields:
         testimonials:
           type: tab
-          title: THEME_MACHE.TESTIMONIALS
+          title: THEME_SKYLIGHT.TESTIMONIALS
           fields:
             header.opening_icon:
               type: filepicker
               folder: '@self'
               preview_images: true
-              label: THEME_MACHE.OPENING_ICON
+              label: THEME_SKYLIGHT.OPENING_ICON
               accept:
                 - .png
                 - .jpg
@@ -24,7 +24,7 @@ form:
               type: filepicker
               folder: '@self'
               preview_images: true
-              label: THEME_MACHE.CLOSING_ICON
+              label: THEME_SKYLIGHT.CLOSING_ICON
               accept:
                 - .png
                 - .jpg
@@ -32,16 +32,16 @@ form:
               type: filepicker
               folder: '@self'
               preview_images: true
-              label: THEME_MACHE.BACKGROUND_IMAGE
+              label: THEME_SKYLIGHT.BACKGROUND_IMAGE
               accept:
                 - .png
                 - .jpg
             header.testimonials:
               type: list
-              label: THEME_MACHE.TESTIMONIALS
+              label: THEME_SKYLIGHT.TESTIMONIALS
               style: vertical
               fields:
                 .testimonial:
                   type: textarea
                   rows: 3
-                  label: THEME_MACHE.TESTIMONIAL
+                  label: THEME_SKYLIGHT.TESTIMONIAL

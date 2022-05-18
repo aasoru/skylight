@@ -13,5 +13,5 @@ form:
             header.list_summary:
               type: textarea
               rows: 3
-              label: THEME_MACHE.LIST_SUMMARY
-              description: THEME_MACHE.LIST_SUMMARY_HELP
+              label: THEME_SKYLIGHT.LIST_SUMMARY
+              description: THEME_SKYLIGHT.LIST_SUMMARY_HELP

@@ -8,7 +8,7 @@
 {% else %}
     {% for p in pages.children.visible %}
     {% set current_page = (p.active or p.activeChild) ? ' active' : '' %}
-    <li class="menu-item{{ current_page }}">
+    <li class="menu-item{{ current_page }} text-shadowed">
         <a href="{{ p.url }}">{{ p.menu }}</a>
     </li>
     {% endfor %}
