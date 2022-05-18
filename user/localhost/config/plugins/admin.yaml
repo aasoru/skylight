@@ -49,17 +49,17 @@ whitelabel:
   codemirror_fontsize: md
   codemirror_md_font: sans
   logo_custom:
-    user/assets/logo.png:
-      name: logo.png
+    user/assets/skylight_logo.png:
+      name: skylight_logo.png
       type: image/png
-      size: 9646
-      path: user/assets/logo.png
+      size: 63126
+      path: user/assets/skylight_logo.png
   logo_login:
-    user/assets/logo.png:
-      name: logo.png
+    user/assets/skylight_logo.png:
+      name: skylight_logo.png
       type: image/png
-      size: 9646
-      path: user/assets/logo.png
+      size: 63126
+      path: user/assets/skylight_logo.png
   color_scheme:
     accents:
       primary-accent: logo
