@@ -1,0 +1,21 @@
+state: enabled
+email: miguel@miguel.com
+fullname: Miguel
+language: en
+content_editor: default
+twofa_enabled: false
+twofa_secret: ABAN3APN43TEVPMS2VDLWZR6D7GAALBC
+avatar: {  }
+hashed_password: $2y$10$KbT8Ulomrmm.GIBCgySTLesd4GrIHg8WU4r65oaazYTiLU6/e77si
+access:
+  site:
+    login: true
+  admin:
+    login: true
+    cache: true
+    pages:
+      create: true
+      read: true
+      update: true
+      delete: false
+      list: true
