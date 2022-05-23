@@ -953,3 +953,25 @@ a {
 .separation-left{
 	border-left: 2px #fcb400 solid;
 }
+
+.social-media li {
+	display: inline;
+}
+
+.social-media li i {
+	font-size: 2rem;
+	color:#fff;
+}
+
+.social-media li i:hover {
+	color: #FFB40A;
+}
+
+.ml-2{
+	margin-left: 0.5rem !important;;
+}
+
+.mr-2 {
+	margin-right: 0.5rem !important;
+	;
+}

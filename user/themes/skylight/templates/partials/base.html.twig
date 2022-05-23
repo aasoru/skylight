@@ -33,11 +33,13 @@
         {% block stylesheets %}
             <link href='https://fonts.googleapis.com/css?family=Lato:100,400,300,300italic,400italic,700' rel='stylesheet' type='text/css'>
             {% do assets.addCss('theme://css/bootstrap_5.2.0.css') %}
+            {% do assets.addCss('theme://css/fontawesome.all.min.css') %}
             {% do assets.addCss('theme://css/style.css') %}
             {% do assets.addCss('theme://css/menu.css') %}
             {% do assets.addCss('theme://css/jquery.bxslider.css') %}
             {% do assets.addCss('theme://css/responsive.css') %}
             {% do assets.addCss('theme://css/animate.css') %}
+            
         {% endblock %}
         {{ assets.css()|raw }}
     </head>
@@ -72,12 +74,22 @@
         <footer>
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-6 col-sm-6 col-md-6">
+                    <div class="col-lg-6 col-md-6 col-sm-6">
                         {{ theme_config.left_footer|markdown }}
                     </div>
-                    <div class="col-lg-6 col-sm-6 col-md-6">
+                    <div class="col-lg-6 col-md-6 col-sm-6">
                         <div class="rightside">{{ theme_config.right_footer|markdown }}</div>
                     </div>
+                </div>
+                <div class="row">
+                    <ul class="social-media align-middle">
+                        <li class="mr-2 align-middle"><a href="https://www.instagram.com/skylight_films_/"><i class="fa-brands fa-lg fa-instagram-square"></i></a></li>
+                        <!--<li class="mx-2 align-middle"><a href=""><i class="fa-brands fa-lg fa-twitter-square"></i></a></li>
+                        <li class="mx-2 align-middle"><a href="#"><i class="fa-brands fa-lg fa-facebook-square"></i></a></li>-->
+                        <li class="mx-2 align-middle"><a href="mail:info@skylightfilms.es"><i class="fa-solid fa-square-envelope"></i></a></li>
+                        <li class="ml-2 align-middle"><a href="tel:+34628574230"><i class="fa-brands fa-whatsapp-square"></i></a></li>
+                        
+                    </ul>
                 </div>
             </div>
         </footer>
