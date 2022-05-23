@@ -26,7 +26,7 @@ features:
         title: 'GRADING, 3D & VFX'
         description: 'Con más de 20 años de experiencia contamos con un editor profesional reconocido por trabajadores de películas como Avatar, Star Wars y mucho más.'
 published: true
-menu: 'Our Services'
+menu: 'Nuestros Servicios'
 ---
 
 **Skylight Films** was born with the idea of renting audiovisual services and crew for the production and final execution of your ideas. **You provide the concept, we provide the work.**

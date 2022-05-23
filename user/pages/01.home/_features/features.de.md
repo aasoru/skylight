@@ -26,7 +26,7 @@ features:
         title: 'GRADING, 3D & VFX'
         description: 'With more tan 20 years of experience our VFX artista is recognized by many film workers who worked on big projects such as AVATAR or STAR WARS.'
 published: true
-menu: 'Our Services'
+menu: 'Unsere Dienstleistungen'
 media_order: '1.png,2.png,3.png,4.png,5.png,6.png,icon_1.png,icon_2.png,icon_3.png,icon_4.png,icon_5.png,icon_6.png'
 ---
 
