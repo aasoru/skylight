@@ -58,7 +58,7 @@ form:
       recaptcha_site_key: null
       recaptcha_not_validated: "Captcha not valid!"
       validate:
-        required: true
+        required: false
   buttons:
     - type: submit
       value: Einreichen
