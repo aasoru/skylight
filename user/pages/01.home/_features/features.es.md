@@ -8,7 +8,7 @@ features:
     -
         icon: icon_1.png
         title: PHOTOGRAPHY
-        description: 'Puedes contar con nuestro equipo de fotografía para eventos de todo tipo, portadas de revista, foto fija inmobiliario, etc'
+        description: 'Puedes contar con nuestro equipo profesional de fotografía para eventos de todo tipo, portadas de revistas, foto fija de inmobiliario, etc.'
     -
         icon: icon_3.png
         title: VIDEOCLIPS
@@ -24,9 +24,9 @@ features:
     -
         icon: icon_4.png
         title: 'GRADING, 3D & VFX'
-        description: 'Con más de 20 años de experiencia contamos con un editor profesional reconocido por trabajadores de películas como Avatar, Star Wars y mucho más.'
+        description: 'Con más de 20 años de experiencia en el sector, contamos con un editor profesional reconocido por trabajadores de películas como Avatar, Star Wars y mucho más.'
 published: true
 menu: 'Nuestros Servicios'
 ---
 
-**Skylight Films** was born with the idea of renting audiovisual services and crew for the production and final execution of your ideas. **You provide the concept, we provide the work.**
+**Skylight Films** nació con la idea de prestar servicios audiovisuales para la ejecución final de tus ideas. **Tú propones el concepto y nosotros el trabajo de calidad.**

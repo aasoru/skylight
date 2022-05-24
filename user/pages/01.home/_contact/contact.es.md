@@ -1,6 +1,6 @@
 ---
-title: Contact
+title: Contacto
 menu: Contacto
 ---
 
-Don't hesitate to contact us if you have any queries!
+¡No dudes en plantearnos cualquier cuestión contactando con nosotros!

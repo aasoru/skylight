@@ -1,33 +1,33 @@
 ---
-title: 'Our Services'
+title: 'Unsere Dienstleistungen'
 features:
     -
         icon: icon_5.png
-        title: 'ADVERTISING SPOTS'
-        description: 'Ready to take your Brand to the TV, social networks ore ven cinemas we offer you to carry out the production of your idea from the beginning till the end'
+        title: WERBE-SPOTS
+        description: 'Sind Sie bereit Ihre Marke in das Netzwerk, ins Fernsehen oder sogar ins Kino zu bringen? Wir bieten Ihnen an, die Produktion dafür von Anfang bis zum Ende durchzuführen.'
     -
         icon: icon_1.png
-        title: PHOTOGRAPHY
-        description: 'You can count on our photography team for events of all kinds, magazine covers, real estate photography, etc.'
+        title: FOTOGRAFIE
+        description: 'Für Events aller Art, Magazin-Cover, Immobilienfotografie, etc. können Sie auf unser Fotografen-Team zählen.'
     -
         icon: icon_3.png
         title: VIDEOCLIPS
-        description: ' Both for minor productions such as lyric-videos and for larger projects we offer you the best resolution to accompany your music.'
+        description: 'Sowohl für kleinere Produktionen wie Lyric-Videos als auch für größere Projekte bieten wir Ihnen die beste Auflösung zur Begleitung Ihrer Musik.'
     -
         icon: icon_2.png
-        title: SHORT-FILMS
-        description: 'If you have an idea or a script and you have always wanted to bring onto the big screen we count with the technical team and all the material it needs to make your dream come true.'
+        title: KURZFILME
+        description: 'Wenn Sie eine Idee oder ein Drehbuch haben das Sie schon immer auf die große Leinwand bringen wollten, stellen wir Ihnen das Team und Material zur Verfügung, um Ihren Traum zu verwirklichen.'
     -
         icon: icon_6.png
-        title: 'WEDDING SPOTS'
-        description: 'We not only cover your wedding potos, but we also offer you to créate a compilation video of your most special day.'
+        title: HOCHZEITSFILM
+        description: 'Wir machen nicht nur Ihre Hochzeitsfotos, sondern bieten Ihnen auch die Erstellung eines Videos für Ihren schönsten Tag an.'
     -
         icon: icon_4.png
         title: 'GRADING, 3D & VFX'
-        description: 'With more tan 20 years of experience our VFX artista is recognized by many film workers who worked on big projects such as AVATAR or STAR WARS.'
+        description: 'Mit mehr als 20 Jahren Erfahrung in der Branche wird unser VFX-cutter von vielen Filmschaffenden anerkannt, die an großen Projekten wie AVATAR oder STAR WARS gearbeitet haben.'
 published: true
 menu: 'Unsere Dienstleistungen'
 media_order: '1.png,2.png,3.png,4.png,5.png,6.png,icon_1.png,icon_2.png,icon_3.png,icon_4.png,icon_5.png,icon_6.png'
 ---
 
-**Skylight Films** was born with the idea of renting audiovisual services and crew for the production and final execution of your ideas. **You provide the concept, we provide the work.**
+**Skylight Films** wurde mit der Idee geboren, audiovisuelle Dienstleistungen und Crews für die Produktion und endgültige Umsetzung Ihrer Ideen anzubieten. **Sie liefern das Konzept, wir liefern die Arbeit.**

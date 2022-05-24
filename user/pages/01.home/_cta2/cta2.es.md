@@ -1,7 +1,6 @@
 ---
-title: "Así es como lo hacemos"
+title: 'Así es como lo hacemos'
 background_image: freepsdanner.jpg
 ---
 
-At Sklight Films we focus on realizing the most cinematic ideas you've ever had. If you always dreamed of that one commercial that you wanted to make, that short film you would lovew to show to the world or the one music video which shows your music in images, but your budget is limited, then you’ve come to the perfect professional team for it.
-We offer our services adapting to your budgets, with a revolutionary type of production, giving everything on our part to make your idea a reality.
+En Sklight Films nos enfocamos en hacer realidad las ideas más cinematográficas que jamás hayas tenido. Si siempre soñaste con ese comercial que quieres hacer, el cortometraje que te encantaría enseñar al mundo o el video musical que muestra tu música en imágenes, pero tu presupuesto es limitado, entonces has llegado al equipo profesional perfecto para ello. Ofrecemos nuestros servicios adaptándolos a tu presupuesto, con un tipo de producción revolucionaria poniendo todo de nuestra parte para hacer realidad tu idea.

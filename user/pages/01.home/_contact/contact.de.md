@@ -1,6 +1,6 @@
 ---
-title: Contact
+title: Kontakt
 menu: Kontact
 ---
 
-Zögern Sie nicht, uns zu kontaktieren, wenn Sie irgendwelche Fragen haben!
+Zögern Sie nicht uns bei Fragen zu kontaktieren!

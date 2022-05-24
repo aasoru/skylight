@@ -13,13 +13,6 @@
     </li>
     {% endfor %}
 {% endif %}
-    <li class="menu-item text-shadowed separation-left">
-        <a href="/es/" class="external">ES</a>
-    </li>
-    <li class="menu-item text-shadowed">
-        <a href="/en/" class="external">EN</a>
-    </li>
-    <li class="menu-item text-shadowed">
-        <a href="/de/" class="external">DE</a>
-    </li>
+
+    {% include 'partials/langswitcher.html.twig' %}
 </ul>
