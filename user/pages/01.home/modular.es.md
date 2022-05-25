@@ -63,8 +63,7 @@ form:
     - type: submit
       value: Enviar
   process:
-    - captcha:
-        recaptcha_secret: null
+    - captcha: false
     - email:
         subject: "[Site Contact Form] {{ form.value.name|e }}"
         body: "{% include 'forms/data.html.twig' %}"
