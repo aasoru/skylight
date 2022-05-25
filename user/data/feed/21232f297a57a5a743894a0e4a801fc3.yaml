@@ -1,4 +1,4 @@
-last_checked: 1653423588
+last_checked: 1653477991
 data:
   -
     title: 'macOS 12.0 Monterey Apache Setup: LetsEncrypt SSL'
@@ -19,7 +19,7 @@ data:
     title: 'macOS 12.0 Monterey Apache Setup: Upgrading Homebrew'
     url: 'https://getgrav.org/blog/macos-monterey-apache-upgrade-homebrew'
     date: 1633694400
-    nicetime: '7 months ago'
+    nicetime: '8 months ago'
   -
     title: 'Skeleton Build Automation'
     url: 'https://getgrav.org/blog/skeletons-build-automation'

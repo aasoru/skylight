@@ -12,10 +12,10 @@ files:
   random_name: false
   filesize: 0
   accept:
-    - "image/*"
+    - 'image/*'
 recaptcha:
   version: 2-invisible
   theme: light
-  site_key: 6LdjnPUfAAAAADz_DdAN8d3pWjdeZlQteD7lI_4W
-  secret_key: 6LdjnPUfAAAAAAC2YfaYCke5EibyTL1aCcw4WCQT
+  site_key: null
+  secret_key: null
   use_recaptcha: false
