@@ -1,6 +1,5 @@
 absolute_urls: false
 timezone: null
-default_locale: null
 param_sep: ':'
 wrapped_site: false
 reverse_proxy_setup: false
@@ -19,7 +18,8 @@ languages:
   supported:
     - es
     - en
-  default_lang: es
+    - de
+  default_lang: en
   include_default_lang: true
   include_default_lang_file_extension: true
   translations: true
@@ -27,7 +27,6 @@ languages:
   session_store_active: false
   http_accept_language: false
   override_locale: false
-  content_fallback: {  }
   pages_fallback_only: false
 home:
   alias: /home
@@ -189,7 +188,7 @@ media:
   unsupported_inline_types: null
   allowed_fallback_types: null
   auto_metadata_exif: false
-  upload_limit: 2097152
+  upload_limit: 15728640
 session:
   enabled: true
   initialize: true

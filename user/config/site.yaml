@@ -1,5 +1,5 @@
 title: 'SkyLight Films'
-default_lang: es
+default_lang: en
 author:
   name: Admin
   email: aasoru@gmail.com
@@ -7,7 +7,7 @@ taxonomies:
   - category
   - tag
 metadata:
-  description: 'Skylight Films'
+  description: 'Skylight Films is a Filmmaking, Commercials & Creative photography company based on the Canary Islands'
 summary:
   enabled: true
   format: short
