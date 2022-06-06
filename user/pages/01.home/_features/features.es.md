@@ -1,5 +1,5 @@
 ---
-title: 'Our Services'
+title: 'Nuestros servicios'
 features:
     -
         icon: icon_5.png

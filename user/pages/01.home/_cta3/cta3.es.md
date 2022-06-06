@@ -1,5 +1,5 @@
 ---
-title: 'Our Works'
+title: 'Nuestros trabajos'
 image: bg.jpg
 published: true
 media_order: bg.jpg
