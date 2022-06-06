@@ -17,6 +17,7 @@ content:
       - _updates
       - _cta2
       - _cta3
+      - _gallery
       - _contact
       - _map
 form:

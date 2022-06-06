@@ -39,9 +39,24 @@
             {% do assets.addCss('theme://css/jquery.bxslider.css') %}
             {% do assets.addCss('theme://css/responsive.css') %}
             {% do assets.addCss('theme://css/animate.css') %}
+            {% do assets.addCss('theme://css/justifiedGallery.min.css') %}
+            {% do assets.addCss('theme://css/glightbox.min.css') %}
+            
             
         {% endblock %}
         {{ assets.css()|raw }}
+
+        {% block javascripts %}
+            {% do assets.addJs('jquery', 101) %}
+            {% do assets.addJs('theme://js/jquery.bxslider.min.js') %}
+            {% do assets.addJs('theme://js/script.js') %}
+            {% do assets.addJs('theme://js/jquery.waypoints.min.js') %}
+            {% do assets.addJs('theme://js/jquery.justifiedGallery.min.js') %}
+            {% do assets.addJs('theme://js/glightbox.min.js') %}
+        {% endblock %}
+        {{ assets.js()|raw }}
+        {{ assets.js('bottom')|raw }}
+        
     </head>
 
     <body>
@@ -93,15 +108,8 @@
                 </div>
             </div>
         </footer>
+        {% do assets.addJs('theme://js/fixed-responsive-nav.js') %}
+        
 
-        {% block javascripts %}
-            {% do assets.addJs('jquery', 101) %}
-            {% do assets.addJs('theme://js/jquery.bxslider.min.js') %}
-            {% do assets.addJs('theme://js/script.js') %}
-            {% do assets.addJs('theme://js/fixed-responsive-nav.js') %}
-            {% do assets.addJs('theme://js/jquery.waypoints.min.js') %}
-        {% endblock %}
-        {{ assets.js()|raw }}
-        {{ assets.js('bottom')|raw }}
     </body>
 </html>
