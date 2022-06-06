@@ -1,6 +1,6 @@
 ---
 title: Kontakt
-menu: Kontact
+menu: Kontakt
 ---
 
 Zögern Sie nicht uns bei Fragen zu kontaktieren!
