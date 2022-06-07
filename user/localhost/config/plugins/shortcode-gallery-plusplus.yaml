@@ -1,8 +1,8 @@
 enabled: true
 gallery:
-  rowHeight: 200
+  rowHeight: 250
   margins: 3
-  lastRow: nojustify
+  lastRow: center
   captions: 'false'
   border: 0
   resizeFactor: '1.5'
