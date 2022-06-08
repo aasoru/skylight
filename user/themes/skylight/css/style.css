@@ -978,6 +978,7 @@ a {
 
 .vimeo-video {
 	position: relative;
+	padding: 45% 0 0 0;
 }
 
 @media only screen and (min-width: 767px) {
