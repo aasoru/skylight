@@ -3,7 +3,7 @@
 /**
  * @package    Grav\Console\Gpm
  *
- * @copyright  Copyright (c) 2015 - 2022 Trilby Media, LLC. All rights reserved.
+ * @copyright  Copyright (c) 2015 - 2023 Trilby Media, LLC. All rights reserved.
  * @license    MIT License; see LICENSE file for details.
  */
 
@@ -11,10 +11,10 @@ namespace Grav\Console\Gpm;
 
 use Exception;
 use Grav\Common\Filesystem\Folder;
+use Grav\Common\HTTP\Response;
 use Grav\Common\GPM\GPM;
 use Grav\Common\GPM\Installer;
 use Grav\Common\GPM\Licenses;
-use Grav\Common\GPM\Response;
 use Grav\Common\GPM\Remote\Package;
 use Grav\Common\Grav;
 use Grav\Common\Utils;
@@ -317,7 +317,7 @@ class InstallCommand extends GpmCommand
                 $questionNoun = 'packages';
             }
 
-            $question = new ConfirmationQuestion("${questionAction} {$questionArticle} {$questionNoun}? [Y|n] ", true);
+            $question = new ConfirmationQuestion("{$questionAction} {$questionArticle} {$questionNoun}? [Y|n] ", true);
             $answer = $this->all_yes ? true : $io->askQuestion($question);
 
             if ($answer) {
@@ -485,7 +485,7 @@ class InstallCommand extends GpmCommand
     {
         $io = $this->getIO();
 
-        exec('cd ' . $this->destination);
+        exec('cd ' . escapeshellarg($this->destination));
 
         $to = $this->destination . DS . $package->install_path;
         $from = $this->getSymlinkSource($package);

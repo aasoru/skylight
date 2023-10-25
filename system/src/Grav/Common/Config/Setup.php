@@ -3,7 +3,7 @@
 /**
  * @package    Grav\Common\Config
  *
- * @copyright  Copyright (c) 2015 - 2022 Trilby Media, LLC. All rights reserved.
+ * @copyright  Copyright (c) 2015 - 2023 Trilby Media, LLC. All rights reserved.
  * @license    MIT License; see LICENSE file for details.
  */
 
@@ -182,13 +182,14 @@ class Setup extends Data
         // If no environment is set, make sure we get one (CLI or hostname).
         if (null === $environment) {
             if (defined('GRAV_CLI')) {
+                $request = null;
+                $uri = null;
                 $environment = 'cli';
             } else {
                 /** @var ServerRequestInterface $request */
                 $request = $container['request'];
-                $host = $request->getUri()->getHost();
-
-                $environment = Utils::substrToString($host, ':');
+                $uri = $request->getUri();
+                $environment = $uri->getHost();
             }
         }
 
