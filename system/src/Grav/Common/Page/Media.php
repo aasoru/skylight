@@ -3,7 +3,7 @@
 /**
  * @package    Grav\Common\Page
  *
- * @copyright  Copyright (c) 2015 - 2022 Trilby Media, LLC. All rights reserved.
+ * @copyright  Copyright (c) 2015 - 2023 Trilby Media, LLC. All rights reserved.
  * @license    MIT License; see LICENSE file for details.
  */
 
@@ -152,7 +152,7 @@ class Media extends AbstractMedia
         foreach ($iterator as $file => $info) {
             // Ignore folders and Markdown files.
             $filename = $info->getFilename();
-            if (!$info->isFile() || $info->getExtension() === 'md' || $filename === 'frontmatter.yaml' || strpos($filename, '.') === 0) {
+            if (!$info->isFile() || $info->getExtension() === 'md' || $filename === 'frontmatter.yaml' || $filename === 'media.json' || strpos($filename, '.') === 0) {
                 continue;
             }
 

@@ -3,4 +3,4 @@ title: 'So machen WIR es'
 background_image: freepsdanner.jpg
 ---
 
-Bei Skylight Films konzentrieren wir uns darauf, die "filmischsten" Ideen, die Sie jemals hatten, zu verwirklichen. Wenn Sie schon immer von Ihrem eigenen Werbespot geträumt haben, einen Kurzfilm, den Sie gerne der Welt zeigen würden, oder ein Musikvideo brauchen, das Ihre Musik in Bildern zeigt, aber Ihr Budget begrenzt ist, dann haben Sie das beste Team dafür gefunden. Wir bieten Dienstleistungen an, die sich Ihrem Budget anpassen. Mit unserer revolutionären Produktionsweise geben wir alles von uns, um Ihre Idee zu verwirklichen.
+Bei **Skylight Films** konzentrieren wir uns darauf, die filmischsten Ideen, die Sie je hatten, Wirklichkeit werden zu lassen. Wenn Sie schon immer Ihren Traum von einem Werbespot, einem epischen Kurzfilm, den Sie der Welt zeigen möchten, oder einem Top-Musikvideo verwirklichen wollten, dann sind Sie bei uns genau richtig. Wir bieten Ihnen unsere Dienste an und passen sie an Ihr Budget an, mit einer revolutionären Art der Produktion, wobei wir alles geben, um Ihr Konzept in die Realität umzusetzen.

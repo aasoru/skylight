@@ -1,6 +1,7 @@
 ---
 title: Gallery
-published: false
+published: true
+menu: Galería
 ---
 
 [gallery]

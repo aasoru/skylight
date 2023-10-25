@@ -3,12 +3,13 @@
 /**
  * @package    Grav\Common\Twig
  *
- * @copyright  Copyright (c) 2015 - 2022 Trilby Media, LLC. All rights reserved.
+ * @copyright  Copyright (c) 2015 - 2023 Trilby Media, LLC. All rights reserved.
  * @license    MIT License; see LICENSE file for details.
  */
 
 namespace Grav\Common\Twig\Extension;
 
+use CallbackFilterIterator;
 use Cron\CronExpression;
 use Grav\Common\Config\Config;
 use Grav\Common\Data\Data;
@@ -41,9 +42,11 @@ use JsonSerializable;
 use RocketTheme\Toolbox\ResourceLocator\UniformResourceLocator;
 use Traversable;
 use Twig\Environment;
+use Twig\Error\RuntimeError;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
 use Twig\Loader\FilesystemLoader;
+use Twig\Markup;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 use function array_slice;
@@ -167,6 +170,11 @@ class GravExtension extends AbstractExtension implements GlobalsInterface
             // PHP methods
             new TwigFilter('count', 'count'),
             new TwigFilter('array_diff', 'array_diff'),
+
+            // Security fixes
+            new TwigFilter('filter', [$this, 'filterFunc'], ['needs_environment' => true]),
+            new TwigFilter('map', [$this, 'mapFunc'], ['needs_environment' => true]),
+            new TwigFilter('reduce', [$this, 'reduceFunc'], ['needs_environment' => true]),
         ];
     }
 
@@ -242,6 +250,12 @@ class GravExtension extends AbstractExtension implements GlobalsInterface
             new TwigFunction('is_object', 'is_object'),
             new TwigFunction('count', 'count'),
             new TwigFunction('array_diff', 'array_diff'),
+            new TwigFunction('parse_url', 'parse_url'),
+
+            // Security fixes
+            new TwigFunction('filter', [$this, 'filterFunc'], ['needs_environment' => true]),
+            new TwigFunction('map', [$this, 'mapFunc'], ['needs_environment' => true]),
+            new TwigFunction('reduce', [$this, 'reduceFunc'], ['needs_environment' => true]),
         ];
     }
 
@@ -463,7 +477,7 @@ class GravExtension extends AbstractExtension implements GlobalsInterface
      */
     public function base64EncodeFilter($str)
     {
-        return base64_encode($str);
+        return base64_encode((string) $str);
     }
 
     /**
@@ -899,8 +913,14 @@ class GravExtension extends AbstractExtension implements GlobalsInterface
             return $this->grav['admin']->translate($args, $lang);
         }
 
-        // else use the default grav translate functionality
-        return $this->grav['language']->translate($args);
+        $translation = $this->grav['language']->translate($args);
+
+        if ($this->config->get('system.languages.debug', false)) {
+            $debugger = $this->grav['debugger'];
+            $debugger->addMessage("$args[0] -> $translation", 'debug');
+        }
+
+        return $translation;
     }
 
     /**
@@ -944,7 +964,7 @@ class GravExtension extends AbstractExtension implements GlobalsInterface
      */
     public function repeatFunc($input, $multiplier)
     {
-        return str_repeat($input, $multiplier);
+        return str_repeat($input, (int) $multiplier);
     }
 
     /**
@@ -1198,6 +1218,9 @@ class GravExtension extends AbstractExtension implements GlobalsInterface
      */
     public function jsonDecodeFilter($str, $assoc = false, $depth = 512, $options = 0)
     {
+        if ($str === null) {
+            $str = '';
+        }
         return json_decode(html_entity_decode($str, ENT_COMPAT | ENT_HTML401, 'UTF-8'), $assoc, $depth, $options);
     }
 
@@ -1209,7 +1232,13 @@ class GravExtension extends AbstractExtension implements GlobalsInterface
      */
     public function getCookie($key)
     {
-        return filter_input(INPUT_COOKIE, $key, FILTER_SANITIZE_STRING);
+        $cookie_value = filter_input(INPUT_COOKIE, $key);
+
+        if ($cookie_value === null) {
+            return null;
+        }
+
+        return htmlspecialchars(strip_tags($cookie_value), ENT_QUOTES, 'UTF-8');
     }
 
     /**
@@ -1675,5 +1704,53 @@ class GravExtension extends AbstractExtension implements GlobalsInterface
             case 'string':
                 return is_string($var);
         }
+    }
+
+    /**
+     * @param Environment $env
+     * @param array $array
+     * @param callable|string $arrow
+     * @return array|CallbackFilterIterator
+     * @throws RuntimeError
+     */
+    function filterFunc(Environment $env, $array, $arrow)
+    {
+        if (!$arrow instanceof \Closure && !is_string($arrow) || Utils::isDangerousFunction($arrow)) {
+            throw new RuntimeError('Twig |filter("' . $arrow . '") is not allowed.');
+        }
+
+        return twig_array_filter($env, $array, $arrow);
+    }
+
+    /**
+     * @param Environment $env
+     * @param array $array
+     * @param callable|string $arrow
+     * @return array|CallbackFilterIterator
+     * @throws RuntimeError
+     */
+    function mapFunc(Environment $env, $array, $arrow)
+    {
+        if (!$arrow instanceof \Closure && !is_string($arrow) || Utils::isDangerousFunction($arrow)) {
+            throw new RuntimeError('Twig |map("' . $arrow . '") is not allowed.');
+        }
+
+        return twig_array_map($env, $array, $arrow);
+    }
+
+    /**
+     * @param Environment $env
+     * @param array $array
+     * @param callable|string $arrow
+     * @return array|CallbackFilterIterator
+     * @throws RuntimeError
+     */
+    function reduceFunc(Environment $env, $array, $arrow)
+    {
+        if (!$arrow instanceof \Closure && !is_string($arrow) || Utils::isDangerousFunction($arrow)) {
+            throw new RuntimeError('Twig |reduce("' . $arrow . '") is not allowed.');
+        }
+
+        return twig_array_map($env, $array, $arrow);
     }
 }
