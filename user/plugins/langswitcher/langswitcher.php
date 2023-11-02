@@ -2,12 +2,8 @@
 namespace Grav\Plugin;
 
 use Composer\Autoload\ClassLoader;
-use Grav\Common\Cache;
-use Grav\Common\Language\Language;
 use Grav\Common\Language\LanguageCodes;
-use Grav\Common\Page\Interfaces\PageInterface;
 use Grav\Common\Page\Page;
-use Grav\Common\Page\Pages;
 use \Grav\Common\Plugin;
 
 class LangSwitcherPlugin extends Plugin
@@ -72,49 +68,17 @@ class LangSwitcherPlugin extends Plugin
     }
 
     /**
-     * Generate localized route based on the translated slugs found through the pages hierarchy
-     */
-    protected function getTranslatedUrl($lang, $path)
-    {
-        /** @var Language $language */
-        $url = null;
-        /** @var Pages $pages */
-        $pages = $this->grav['pages'];
-        /** @var Language $language */
-        $language = $this->grav['language'];
-
-        $language->init();
-        $language->setActive($lang);
-        $pages->reset();
-        $page = $pages->get($path);
-        if ($page) {
-            $url = $page->url();
-        }
-        return $url;
-    }
-
-    /**
      * Set needed variables to display Langswitcher.
      */
     public function onTwigSiteVariables()
     {
-
-        /** @var PageInterface $page */
-        $page = $this->grav['page'];
-
-        /** @var Pages $pages */
-        $pages = $this->grav['pages'];
-
-        /** @var Cache $cache */
-        $cache = $this->grav['cache'];
-
         $data = new \stdClass;
+
+        $page = $this->grav['page'];
         $data->page_route = $page->rawRoute();
         if ($page->home()) {
             $data->page_route = '/';
         }
-
-        $translated_cache_key = md5('translated_cache_key'.$data->page_route.$pages->getSimplePagesHash());
 
         $languages = $this->grav['language']->getLanguages();
         $data->languages = $languages;
@@ -125,9 +89,6 @@ class LangSwitcherPlugin extends Plugin
                 $translated_pages[$language] = null;
                 $page_name_without_ext = substr($page->name(), 0, -(strlen($page->extension())));
                 $translated_page_path = $page->path() . DS . $page_name_without_ext . '.' . $language . '.md';
-                if (!file_exists($translated_page_path) and $language == $this->grav['language']->getDefault()) {
-                    $translated_page_path = $page->path() . DS . $page_name_without_ext . '.md';
-                }
                 if (file_exists($translated_page_path)) {
                     $translated_page = new Page();
                     $translated_page->init(new \SplFileInfo($translated_page_path), $language . '.md');
@@ -137,35 +98,7 @@ class LangSwitcherPlugin extends Plugin
             $data->translated_pages = $translated_pages;
         }
 
-        $language = $this->grav['language'];
-        $active = $language->getActive() ?? $language->getDefault();
-
-        if ($this->config->get('plugins.langswitcher.translated_urls', true)) {
-            $data->translated_routes = $cache->fetch($translated_cache_key) ?: [];
-
-            if (empty($data->translated_routes)) {
-                $translate_langs = $data->languages;
-
-                if (($key = array_search($active, $translate_langs)) !== false) {
-                    $data->translated_routes[$active] = $page->url();
-                    unset($translate_langs[$key]);
-                }
-
-                foreach ($translate_langs as $lang) {
-                    $data->translated_routes[$lang] = $this->getTranslatedUrl($lang, $page->path());
-                    if (is_null($data->translated_routes[$lang])) {
-                        $data->translated_routes[$lang] = $data->page_route;
-                    }
-                }
-                // Reset pages to current active language
-                $language->init();
-                $language->setActive($active);
-                $this->grav['pages']->reset();
-                $cache->save($translated_cache_key, $data->translated_routes);
-            }
-        }
-
-        $data->current = $language->getLanguage();
+        $data->current = $this->grav['language']->getLanguage();
 
         $this->grav['twig']->twig_vars['langswitcher'] = $this->grav['langswitcher'] = $data;
 

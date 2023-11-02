@@ -21,12 +21,9 @@ use Grav\Common\Yaml;
 use Grav\Framework\Form\Interfaces\FormInterface;
 use Grav\Framework\Psr7\Response;
 use Grav\Framework\Route\Route;
-use Grav\Plugin\Form\BasicCaptcha;
 use Grav\Plugin\Form\Form;
 use Grav\Plugin\Form\Forms;
 use Grav\Plugin\Form\TwigExtension;
-use Grav\Common\HTTP\Client;
-use Monolog\Logger;
 use ReCaptcha\ReCaptcha;
 use ReCaptcha\RequestMethod\CurlPost;
 use RecursiveArrayIterator;
@@ -36,7 +33,6 @@ use RocketTheme\Toolbox\File\YamlFile;
 use RocketTheme\Toolbox\File\File;
 use RocketTheme\Toolbox\Event\Event;
 use RuntimeException;
-use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Twig\Environment;
 use Twig\Extension\CoreExtension;
 use Twig\Extension\EscaperExtension;
@@ -66,7 +62,8 @@ class FormPlugin extends Plugin
     protected $active_forms = [];
     /** @var array */
     protected $json_response = [];
-
+    /** @var bool */
+    protected $recache_forms = false;
 
     /**
      * @return bool
@@ -138,8 +135,6 @@ class FormPlugin extends Plugin
             $this->grav->close($response);
         }
 
-        $this->processBasicCaptchaImage($uri);
-
         $this->enable([
             'onPageProcessed' => ['onPageProcessed', 0],
             'onPagesInitialized' => ['onPagesInitialized', 0],
@@ -149,8 +144,6 @@ class FormPlugin extends Plugin
             'onTwigSiteVariables' => ['onTwigVariables', 0],
             'onFormValidationProcessed' => ['onFormValidationProcessed', 0],
         ]);
-
-
     }
 
     /**
@@ -225,11 +218,17 @@ class FormPlugin extends Plugin
         $submitted = false;
         $this->json_response = [];
 
+        // Save cached forms.
+        if ($this->recache_forms) {
+            $this->saveCachedForms();
+        }
+
         /** @var PageInterface $page */
         $page = $this->grav['page'];
 
-
-        // DEPRECATED: This should no longer ever happen
+        // Force rebuild form when form has not been built and form cache expired.
+        // This happens when form cache expires before the page cache
+        // and then does not trigger 'onPageProcessed' event.
         if (!$this->forms) {
             $this->onPageProcessed(new Event(['page' => $page]));
         }
@@ -314,11 +313,9 @@ class FormPlugin extends Plugin
             /** @var Forms $forms */
             $forms = $this->grav['forms'];
 
-            $lang = $this->grav['language']->getLanguage();
-
             /** @var Route $route */
             $route = $this->grav['route'];
-            $pageForms = $this->forms[$lang][$route->getRoute()] ?? [];
+            $pageForms = $this->forms[$route->getRoute()] ?? [];
 
             /**
              * @var string $name
@@ -440,7 +437,6 @@ class FormPlugin extends Plugin
      * @param Event $event
      * @return void
      * @throws Exception
-     * @throws TransportExceptionInterface
      */
     public function onFormProcessed(Event $event): void
     {
@@ -513,55 +509,6 @@ class FormPlugin extends Plugin
                     return;
                 }
                 break;
-            case 'basic-captcha':
-                $captcha = new BasicCaptcha();
-                $captcha_value = trim($form->value('basic-captcha'));
-                if (!$captcha->validateCaptcha($captcha_value)) {
-                    $message = $params['message'] ?? $this->grav['language']->translate('PLUGIN_FORM.ERROR_BASIC_CAPTCHA');
-
-                    $this->grav->fireEvent('onFormValidationError', new Event([
-                        'form' => $form,
-                        'message' => $message
-                    ]));
-
-                    $event->stopPropagation();
-                    return;
-                }
-                break;
-            case 'turnstile':
-                /** @var Uri $uri */
-                $uri = $this->grav['uri'];
-
-                $turnstile_config = $this->config->get('plugins.form.turnstile');
-                $secret = $turnstile_config['secret_key'] ?? null;
-                $token = $form->getValue('cf-turnstile-response') ?? null;
-                $ip = Uri::ip();
-
-                $client = Client::getClient();
-                $response = $client->request('POST', 'https://challenges.cloudflare.com/turnstile/v0/siteverify', [
-                    'body' => [
-                        'secret' => $secret,
-                        'response' => $token,
-                        'remoteip' => $ip
-                    ]
-                ]);
-
-                $content = $response->toArray();
-
-                if (!$content['success']) {
-                    $message = $params['message'] ?? $this->grav['language']->translate('PLUGIN_FORM.ERROR_BASIC_CAPTCHA');
-
-                    $this->grav->fireEvent('onFormValidationError', new Event([
-                        'form' => $form,
-                        'message' => $message
-                    ]));
-
-                    $this->grav['log']->addWarning('Form Turnstile invalid: [' . $uri->route() . '] ' . json_encode($content));
-                    $event->stopPropagation();
-                    return;
-                }
-
-                break;
             case 'timestamp':
                 $label = $params['label'] ?? 'Timestamp';
                 $format = $params['format'] ?? 'Y-m-d H:i:s';
@@ -606,7 +553,8 @@ class FormPlugin extends Plugin
                     $this->grav['messages']->add($form->message, 'success');
                 }
 
-                $this->grav->redirect($url);
+                $event['redirect'] = $url;
+                $event->stopPropagation();
                 break;
             case 'reset':
                 if (Utils::isPositive($params)) {
@@ -832,13 +780,13 @@ class FormPlugin extends Plugin
      */
     public function addFormDefinition(PageInterface $page, string $name, array $form): void
     {
-        $route = ($page->home() ? '/' : $page->route()) ?? '/';
-        $lang = $this->grav['language']->getLanguage();
+        $route = $page->home() ? '/' : $page->route();
 
-        if (!isset($this->forms[$lang][$route][$name])) {
+        if (!isset($this->forms[$route][$name])) {
             $form['_page_routable'] = !$page->isModule();
-            $this->forms[$lang][$route][$name] = $form;
-            $this->saveCachedForms();
+
+            $this->forms[$route][$name] = $form;
+            $this->recache_forms = true;
         }
     }
 
@@ -855,14 +803,13 @@ class FormPlugin extends Plugin
             return;
         }
 
-        $lang = $this->grav['language']->getLanguage();
         $name = $form->getName();
 
-        if (!isset($this->forms[$lang][$route][$name])) {
+        if (!isset($this->forms[$route][$name])) {
             $form['_page_routable'] = true;
 
-            $this->forms[$lang][$route][$name] = $form;
-            $this->saveCachedForms();
+            $this->forms[$route][$name] = $form;
+            $this->recache_forms = true;
         }
     }
 
@@ -876,7 +823,6 @@ class FormPlugin extends Plugin
     {
         /** @var Pages $pages */
         $pages = $this->grav['pages'];
-        $lang = $this->grav['language']->getLanguage();
 
         // Handle parameters.
         if (is_array($data)) {
@@ -922,7 +868,7 @@ class FormPlugin extends Plugin
 
         // Attempt to find the form from the page.
         if ('' !== $route) {
-            $forms = $this->forms[$lang][$route] ?? [];
+            $forms = $this->forms[$route] ?? [];
 
             if (!$unnamed) {
                 // Get form by the name.
@@ -938,7 +884,9 @@ class FormPlugin extends Plugin
         if (null === $form) {
             // First check if we requested a specific form which didn't exist.
             if ($route_provided || $unnamed) {
-                $this->grav['debugger']->addMessage(sprintf('Form %s not found in page %s', $name ?? 'unnamed', $route), 'warning');
+                /** @var Debugger $debugger */
+                $debugger = $this->grav['debugger'];
+                $debugger->addMessage(sprintf('Form %s not found in page %s', $name ?? 'unnamed', $route), 'warning');
 
                 return null;
             }
@@ -952,7 +900,8 @@ class FormPlugin extends Plugin
 
             // Check for naming conflicts.
             if (count($forms) > 1) {
-                $this->grav['debugger']->addMessage(sprintf('Fetching form by its name, but there are multiple pages with the same form name %s', $name), 'warning');
+                $debugger = $this->grav['debugger'];
+                $debugger->addMessage(sprintf('Fetching form by its name, but there are multiple pages with the same form name %s', $name), 'warning');
             }
 
             [$route, $name, $form] = $first;
@@ -964,7 +913,9 @@ class FormPlugin extends Plugin
         if (is_array($form)) {
             // Form was cached as an array, try to create the object.
             if (null === $page) {
-                $this->grav['debugger']->addMessage(sprintf('Form %s cannot be created as page %s does not exist', $name, $route), 'warning');
+                /** @var Debugger $debugger */
+                $debugger = $this->grav['debugger'];
+                $debugger->addMessage(sprintf('Form %s cannot be created as page %s does not exist', $name, $route), 'warning');
 
                 return null;
             }
@@ -1099,10 +1050,7 @@ class FormPlugin extends Plugin
     protected function findFormByName(string $name): array
     {
         $list = [];
-        $lang = $this->grav['language']->getLanguage();
-        $lang_forms = $this->forms[$lang] ?? [];
-
-        foreach ($lang_forms as $route => $forms) {
+        foreach ($this->forms as $route => $forms) {
             foreach ($forms as $key => $form) {
                 if ($name === $key && !empty($form['_page_routable'])) {
                     $list[] = [$route, $key, $form];
@@ -1180,8 +1128,8 @@ class FormPlugin extends Plugin
             }
 
             // Try to find the posted form if available.
-            $form_name = $this->grav['uri']->post('__form-name__', GRAV_SANITIZE_STRING) ?? '';
-            $unique_id = $this->grav['uri']->post('__unique_form_id__', GRAV_SANITIZE_STRING) ?? '';
+            $form_name = $this->grav['uri']->post('__form-name__', FILTER_SANITIZE_STRING) ?? '';
+            $unique_id = $this->grav['uri']->post('__unique_form_id__', FILTER_SANITIZE_STRING) ?? '';
 
             if (!$form_name) {
                 $form_name = $page ? $page->slug() : null;
@@ -1239,9 +1187,12 @@ class FormPlugin extends Plugin
             /** @var Cache $cache */
             $cache = $this->grav['cache'];
 
-            $forms = $cache->fetch($this->getFormCacheId());
+            [$forms] = $cache->fetch($this->getFormCacheId());
         } catch (Exception $e) {
-            $this->grav['debugger']->addMessage(sprintf('Unserializing cached forms failed: %s', $e->getMessage()), 'error');
+            /** @var Debugger $debugger */
+            $debugger = Grav::instance()['debugger'];
+            $debugger->addMessage(sprintf('Unserializing cached forms failed: %s', $e->getMessage()), 'error');
+
             $forms = null;
         }
 
@@ -1251,11 +1202,7 @@ class FormPlugin extends Plugin
 
         // Only update the forms if it's not empty
         if ($forms) {
-            $this->forms = Utils::arrayMergeRecursiveUnique($this->forms, $forms);
-            if ($this->config()['debug']) {
-                $this->grav['log']->addDebug(sprintf("<<<< Loaded cached forms: %s\n%s", $this->getFormCacheId(), $this->arrayToString($this->forms)));
-            }
-
+            $this->forms = array_merge($this->forms, $forms);
         }
     }
 
@@ -1266,19 +1213,17 @@ class FormPlugin extends Plugin
      */
     protected function saveCachedForms(): void
     {
+        // Save the current state of the forms to cache
+        if (!$this->recache_forms) {
+            return;
+        }
+
+        $this->recache_forms = false;
+
         /** @var Cache $cache */
         $cache = $this->grav['cache'];
-        $cache_id = $this->getFormCacheId();
 
-        $forms = $cache->fetch($cache_id);
-        if ($forms) {
-            $this->forms = Utils::arrayMergeRecursiveUnique($this->forms, $forms);
-        }
-
-        $cache->save($cache_id, $this->forms);
-        if ($this->config()['debug']) {
-            $this->grav['log']->addDebug(sprintf(">>>> Saved cached forms: %s\n%s", $this->getFormCacheId(), $this->arrayToString($this->forms)));
-        }
+        $cache->save($this->getFormCacheId(), [$this->forms]);
     }
 
     /**
@@ -1288,10 +1233,10 @@ class FormPlugin extends Plugin
      */
     protected function getFormCacheId(): string
     {
-        /** @var \Grav\Common\Cache $cache */
-        $cache = $this->grav['cache'];
-        $cache_id = $cache->getKey() . '-form-plugin';
-        return $cache_id;
+        /** @var Pages $pages */
+        $pages = $this->grav['pages'];
+
+        return $pages->getPagesCacheId() . '-form-plugin';
     }
 
     /**
@@ -1312,37 +1257,5 @@ class FormPlugin extends Plugin
         $milliseconds = round(($utimestamp - $timestamp) * 1000000);
 
         return date(preg_replace('`(?<!\\\\)u`', sprintf('%06d', $milliseconds), $format), $timestamp);
-    }
-
-    protected function processBasicCaptchaImage(Uri $uri)
-    {
-        if ($uri->path() === '/forms-basic-captcha-image.jpg') {
-            $captcha = new BasicCaptcha();
-            $code = $captcha->getCaptchaCode();
-            $image = $captcha->createCaptchaImage($code);
-            $captcha->renderCaptchaImage($image);
-            exit;
-        }
-    }
-
-    protected function arrayToString($array, $level = 2) {
-        $result = $this->limitArrayLevels($array, $level);
-        return json_encode($result, JSON_UNESCAPED_SLASHES);
-    }
-
-    protected function limitArrayLevels($array, $levelsToKeep, $currentLevel = 0) {
-        if ($currentLevel >= $levelsToKeep) {
-            return '-';
-        }
-
-        $result = [];
-        foreach ($array as $key => $value) {
-            if (is_array($value)) {
-                $value = $this->limitArrayLevels($value, $levelsToKeep, $currentLevel + 1);
-            }
-            $result[$key] = $value;
-        }
-
-        return $result;
     }
 }

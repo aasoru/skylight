@@ -3,7 +3,7 @@
 /**
  * @package    Grav\Framework\RequestHandler
  *
- * @copyright  Copyright (c) 2015 - 2023 Trilby Media, LLC. All rights reserved.
+ * @copyright  Copyright (c) 2015 - 2022 Trilby Media, LLC. All rights reserved.
  * @license    MIT License; see LICENSE file for details.
  */
 
@@ -28,10 +28,10 @@ trait RequestHandlerTrait
     protected $middleware;
 
     /** @var callable */
-    protected $handler;
+    private $handler;
 
     /** @var ContainerInterface|null */
-    protected $container;
+    private $container;
 
     /**
      * {@inheritdoc}

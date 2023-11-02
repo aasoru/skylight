@@ -28,7 +28,6 @@ languages:
   override_locale: false                         # Override the default or system locale with language specific one
   content_fallback: {}                           # Custom language fallbacks. eg: {fr: ['fr', 'en']}
   pages_fallback_only: false                     # DEPRECATED: Use `content_fallback` instead
-  debug: false                                   # Debug language detection
 
 home:
   alias: '/home'                                 # Default path for home, ie /
@@ -36,7 +35,6 @@ home:
 
 pages:
   type: regular                                  # EXPERIMENTAL: Page type: regular or flex
-  dirs: ['page://']                              # Advanced functionality, allows for multiple page paths
   theme: quark                                   # Default theme (defaults to "quark" theme)
   order:
     by: default                                  # Order pages by "default", "alpha" or "date"
@@ -146,7 +144,6 @@ log:
   handler: file                                 # Log handler. Currently supported: file | syslog
   syslog:
     facility: local6                            # Syslog facilities output
-    tag: grav                                   # Syslog tag. Default: "grav".
 
 debugger:
   enabled: false                                 # Enable Grav debugger and following settings

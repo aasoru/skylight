@@ -38,8 +38,6 @@ class SitemapPlugin extends Plugin
     protected $ignore_protected = true;
     protected $ignore_redirect = true;
 
-    protected $news_route = null;
-
     /**
      * @return array
      */
@@ -76,19 +74,9 @@ class SitemapPlugin extends Plugin
 
         /** @var Uri $uri */
         $uri = $this->grav['uri'];
-        $route = $this->config()['route'];
-        $uri_route = $uri->route();
-        $news_page = false;
+        $route = $this->config->get('plugins.sitemap.route');
 
-        if ($this->config()['include_news_tags'] &&
-            $this->config()['standalone_sitemap_news'] &&
-            Utils::endsWith($uri->uri(), $this->config()['sitemap_news_path']) &&
-            in_array(dirname($uri->route()), $this->config()['news_enabled_paths'])) {
-            $this->news_route = dirname($uri->route());
-        }
-
-
-        if ($route === $uri->route() || !empty($this->news_route)) {
+        if ($route && $route == $uri->path()) {
 
             $this->enable([
                 'onTwigInitialized' => ['onTwigInitialized', 0],
@@ -112,7 +100,7 @@ class SitemapPlugin extends Plugin
         $pages = $this->grav['pages'];
 
         $cache_id = md5('sitemap-data-'.$pages->getPagesCacheId());
-//        $this->sitemap = $cache->fetch($cache_id);
+        $this->sitemap = $cache->fetch($cache_id);
 
         if ($this->sitemap === false) {
             $this->multilang_enabled = $this->config->get('plugins.sitemap.multilang_enabled');
@@ -122,7 +110,6 @@ class SitemapPlugin extends Plugin
             $default_lang = $language->getDefault() ?: 'en';
             $active_lang = $language->getActive() ?? $default_lang;
             $languages = $this->multilang_enabled && $language->enabled() ? $language->getLanguages() : [$default_lang];
-            $include_default_lang = $this->config->get('system.languages.include_default_lang');
 
             $this->multilang_skiplang_prefix = $this->config->get('system.languages.include_default_lang') ?  '' : $language->getDefault();
             $this->multilang_include_fallbacks = $this->config->get('system.languages.pages_fallback_only') || !empty($this->config->get('system.languages.content_fallback'));
@@ -161,12 +148,12 @@ class SitemapPlugin extends Plugin
                         if ($language->enabled()) {
                             foreach ($route_data as $l => $l_data) {
                                 $entry->addHreflangs(['hreflang' => $l, 'href' => $l_data['location']]);
-                                if ($include_default_lang === false && $l == $default_lang) {
+                                if ($l === $default_lang) {
                                     $entry->addHreflangs(['hreflang' => 'x-default', 'href' => $l_data['location']]);
                                 }
                             }
                         }
-                        $this->sitemap[$data['url']] = $entry;
+                        $this->sitemap[$data['route']] = $entry;
                     }
                 }
             }
@@ -189,11 +176,10 @@ class SitemapPlugin extends Plugin
     {
         $page = $event['page'] ?? null;
         $route = $this->config->get('plugins.sitemap.route');
-        $uri = $this->grav['uri'];
-        $html_support = $this->config->get('plugins.sitemap.html_support', false);
-        $extension = $this->grav['uri']->extension() ?? ($html_support ? 'html': 'xml');
 
-        if (is_null($page) || $uri->route() === $route || !empty($this->news_route)) {
+        if (is_null($page) || $page->route() !== $route) {
+            $html_support = $this->config->get('plugins.sitemap.html_support', false);
+            $extension = $this->grav['uri']->extension() ?? ($html_support ? 'html': 'xml');
 
             // set a dummy page
             $page = new Page;
@@ -202,16 +188,7 @@ class SitemapPlugin extends Plugin
             unset($this->grav['page']);
             $this->grav['page'] = $page;
             $twig = $this->grav['twig'];
-
-            if (!empty($this->news_route)) {
-                $header = $page->header();
-                $header->sitemap['news_route'] = $this->news_route;
-                $page->header($header);
-                $twig->template = "sitemap-news.$extension.twig";
-            } else {
-                $twig->template = "sitemap.$extension.twig";
-            }
-
+            $twig->template = "sitemap.$extension.twig";
         }
     }
 
@@ -220,9 +197,6 @@ class SitemapPlugin extends Plugin
     {
         $this->grav['twig']->twig()->addFunction(
             new TwigFunction('sort_sitemap_entries_by_language', [$this, 'sortSitemapEntriesByLanguage'])
-        );
-        $this->grav['twig']->twig()->addFunction(
-            new TwigFunction('timestamp_within_days', [$this, 'timestampWithinDays'])
         );
     }
 
@@ -281,13 +255,6 @@ class SitemapPlugin extends Plugin
         return $entries;
     }
 
-    public function timestampWithinDays(int $timestamp, int $days): bool
-    {
-        $now = time();
-        $days_ago = $now - ($days * 24 * 60 * 60);
-        return $timestamp >= $days_ago;
-    }
-
     protected function addRouteData($pages, $lang)
     {
         $routes = array_unique($pages->routes());
@@ -297,7 +264,6 @@ class SitemapPlugin extends Plugin
             /** @var PageInterface $page */
             $page = $pages->get($path);
 
-            $rawroute = $page->rawRoute();
             $header = $page->header();
             $external_url = $this->ignore_external ? isset($header->external_url) : false;
             $protected_page = $this->ignore_protected ? isset($header->access) : false;
@@ -309,20 +275,15 @@ class SitemapPlugin extends Plugin
                 $page_languages = array_keys($page->translatedLanguages());
                 $include_lang = $this->multilang_skiplang_prefix !== $lang;
                 $location = $page->canonical($include_lang);
-                $url = $page->url(false, $include_lang);
+                $page_route = $page->url(false, $include_lang);
 
                 $lang_route = [
                     'title' => $page->title(),
-                    'url' => $url,
-                    'route' => $route,
+                    'route' => $page_route,
                     'lang' => $lang,
                     'translated' => in_array($lang, $page_languages),
                     'location' => $location,
                     'lastmod' => date($this->datetime_format, $page->modified()),
-                    'longdate' => date('Y-m-d\TH:i:sP', $page->date()),
-                    'shortdate' => date('Y-m-d', $page->date()),
-                    'timestamp' => $page->date(),
-                    'rawroute' => $page->rawRoute(),
                 ];
 
                 if ($this->include_change_freq) {
@@ -348,7 +309,7 @@ class SitemapPlugin extends Plugin
 
 
 
-                $this->route_data[$rawroute][$lang] = $lang_route;
+                $this->route_data[$route][$lang] = $lang_route;
             }
         }
     }

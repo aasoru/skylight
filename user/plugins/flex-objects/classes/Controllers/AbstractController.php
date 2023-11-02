@@ -290,16 +290,14 @@ abstract class AbstractController implements RequestHandlerInterface
 
     /**
      * @param string $string
-     * @param array $args
      * @return string
      */
-    public function translate(string $string, ...$args): string
+    public function translate(string $string): string
     {
         /** @var Language $language */
         $language = $this->grav['language'];
-        array_unshift($args, $string);
 
-        return $language->translate($args);
+        return $language->translate($string);
     }
 
     /**
