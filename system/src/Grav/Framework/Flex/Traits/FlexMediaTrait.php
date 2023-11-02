@@ -5,7 +5,7 @@ namespace Grav\Framework\Flex\Traits;
 /**
  * @package    Grav\Framework\Flex
  *
- * @copyright  Copyright (c) 2015 - 2023 Trilby Media, LLC. All rights reserved.
+ * @copyright  Copyright (c) 2015 - 2022 Trilby Media, LLC. All rights reserved.
  * @license    MIT License; see LICENSE file for details.
  */
 
@@ -22,9 +22,6 @@ use Grav\Framework\Cache\CacheInterface;
 use Grav\Framework\Filesystem\Filesystem;
 use Grav\Framework\Flex\FlexDirectory;
 use Grav\Framework\Form\FormFlashFile;
-use Grav\Framework\Media\Interfaces\MediaObjectInterface;
-use Grav\Framework\Media\MediaObject;
-use Grav\Framework\Media\UploadedMediaObject;
 use Psr\Http\Message\UploadedFileInterface;
 use RocketTheme\Toolbox\ResourceLocator\UniformResourceLocator;
 use RuntimeException;
@@ -33,6 +30,7 @@ use function in_array;
 use function is_array;
 use function is_callable;
 use function is_int;
+use function is_object;
 use function is_string;
 use function strpos;
 
@@ -300,55 +298,6 @@ trait FlexMediaTrait
     }
 
     /**
-     * @param string|null $field
-     * @param string $filename
-     * @param MediaObjectInterface|null $image
-     * @return MediaObject|UploadedMediaObject
-     */
-    protected function buildMediaObject(?string $field, string $filename, MediaObjectInterface $image = null)
-    {
-        if (!$image) {
-            $media = $field ? $this->getMediaField($field) : null;
-            if ($media) {
-                $image = $media[$filename];
-            }
-        }
-
-        return new MediaObject($field, $filename, $image, $this);
-    }
-
-    /**
-     * @param string|null $field
-     * @return array
-     */
-    protected function buildMediaList(?string $field): array
-    {
-        $names = $field ? (array)$this->getNestedProperty($field) : [];
-        $media = $field ? $this->getMediaField($field) : null;
-        if (null === $media) {
-            $media = $this->getMedia();
-        }
-
-        $list = [];
-        foreach ($names as $key => $val) {
-            $name = is_string($val) ? $val : $key;
-            $medium = $media[$name];
-            if ($medium) {
-                if ($medium->uploaded_file) {
-                    $upload = $medium->uploaded_file;
-                    $id = $upload instanceof FormFlashFile ? $upload->getId() : "{$field}-{$name}";
-
-                    $list[] = new UploadedMediaObject($id, $field, $name, $upload);
-                } else {
-                    $list[] = $this->buildMediaObject($field, $name, $medium);
-                }
-            }
-        }
-
-        return $list;
-    }
-
-    /**
      * @param array $files
      * @return void
      */
@@ -426,7 +375,7 @@ trait FlexMediaTrait
         $updated = false;
         foreach ($this->getUpdatedMedia() as $filename => $upload) {
             if (is_array($upload)) {
-                /** @var array{UploadedFileInterface,array} $upload */
+                // Uses new format with [UploadedFileInterface, array].
                 $settings = $upload[1];
                 if (isset($settings['destination']) && $settings['destination'] === $media->getPath()) {
                     $upload = $upload[0];
@@ -439,7 +388,6 @@ trait FlexMediaTrait
                 $updated = true;
                 if ($medium) {
                     $medium->uploaded = true;
-                    $medium->uploaded_file = $upload;
                     $media->add($filename, $medium);
                 } elseif (is_callable([$media, 'hide'])) {
                     $media->hide($filename);

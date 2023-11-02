@@ -3,46 +3,33 @@ namespace Grav\Plugin\Email;
 
 use Grav\Common\Config\Config;
 use Grav\Common\Grav;
-use Grav\Common\Utils;
 use Grav\Common\Language\Language;
 use Grav\Common\Markdown\Parsedown;
 use Grav\Common\Twig\Twig;
 use Grav\Framework\Form\Interfaces\FormInterface;
 use \Monolog\Logger;
 use \Monolog\Handler\StreamHandler;
-use RocketTheme\Toolbox\Event\Event;
-use RocketTheme\Toolbox\ResourceLocator\UniformResourceLocator;
-use Symfony\Component\Mailer\Envelope;
-use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
-use Symfony\Component\Mailer\Header\MetadataHeader;
-use Symfony\Component\Mailer\Header\TagHeader;
-use Symfony\Component\Mailer\Mailer;
-use Symfony\Component\Mailer\Transport;
-use Symfony\Component\Mailer\Transport\TransportInterface;
-use Symfony\Component\Mime\Address;
 
 class Email
 {
-    /** @var Mailer */
+    /**
+     * @var \Swift_Transport
+     */
     protected $mailer;
 
-    /** @var TransportInterface */
-    protected $transport;
+    /**
+     * @var \Swift_Plugins_LoggerPlugin
+     */
+    protected $logger;
 
-    protected $log;
-
-    public function __construct()
-    {
-        $this->initMailer();
-        $this->initLog();
-    }
+    protected $queue_path;
 
     /**
      * Returns true if emails have been enabled in the system.
      *
      * @return bool
      */
-    public static function enabled(): bool
+    public static function enabled()
     {
         return Grav::instance()['config']->get('plugins.email.mailer.engine') !== 'none';
     }
@@ -52,7 +39,7 @@ class Email
      *
      * @return bool
      */
-    public static function debug(): bool
+    public static function debug()
     {
         return Grav::instance()['config']->get('plugins.email.debug') == 'true';
     }
@@ -60,57 +47,82 @@ class Email
     /**
      * Creates an email message.
      *
-     * @param string|null $subject
-     * @param string|null $body
-     * @param string|null $contentType
-     * @param string|null $charset @deprecated
-     * @return Message
+     * @param string $subject
+     * @param string $body
+     * @param string $contentType
+     * @param string $charset
+     * @return \Swift_Message
      */
-    public function message(string $subject = null, string $body = null, string $contentType = null, string $charset = null): Message
+    public function message($subject = null, $body = null, $contentType = null, $charset = null)
     {
-        $message = new Message();
-        $message->subject($subject);
-        if ($contentType === 'text/html') {
-            $message->html($body);
-        } else {
-            $message->text($body);
-        }
+        return new \Swift_Message($subject, $body, $contentType, $charset);
+    }
 
-        return $message;
+    /**
+     * Creates an attachment.
+     *
+     * @param string $data
+     * @param string $filename
+     * @param string $contentType
+     * @return \Swift_Attachment
+     */
+    public function attachment($data = null, $filename = null, $contentType = null)
+    {
+        return new \Swift_Attachment($data, $filename, $contentType);
+    }
+
+    /**
+     * Creates an embedded attachment.
+     *
+     * @param string $data
+     * @param string $filename
+     * @param string $contentType
+     * @return \Swift_EmbeddedFile
+     */
+    public function embedded($data = null, $filename = null, $contentType = null)
+    {
+        return new \Swift_EmbeddedFile($data, $filename, $contentType);
+    }
+
+    /**
+     * Creates an image attachment.
+     *
+     * @param string $data
+     * @param string $filename
+     * @param string $contentType
+     * @return \Swift_Image
+     */
+    public function image($data = null, $filename = null, $contentType = null)
+    {
+        return new \Swift_Image($data, $filename, $contentType);
     }
 
     /**
      * Send email.
      *
-     * @param Message $message
-     * @param Envelope|null $envelope
+     * @param \Swift_Message $message
+     * @param array|null $failedRecipients
      * @return int
      */
-    public function send(Message $message, Envelope $envelope = null): int
+    public function send($message, &$failedRecipients = null)
     {
-        $status = '🛑 ';
-        $sent_msg = null;
-        $debug = null;
+        $mailer = $this->getMailer();
 
-        try {
-            $sent_msg = $this->transport->send($message->getEmail(), $envelope);
-            $return = 1;
-            $status = '✅';
-            $debug = $sent_msg->getDebug();
-        } catch (TransportExceptionInterface $e) {
-            $return = 0;
-            $status .= $e->getMessage();
-            $debug = $e->getDebug();
+        $result = $mailer ? $mailer->send($message, $failedRecipients) : 0;
+
+        // Check if emails and debugging are both enabled.
+        if ($mailer && $this->debug()) {
+
+            $log = new Logger('email');
+            $locator = Grav::instance()['locator'];
+            $log_file = $locator->findResource('log://email.log', true, true);
+            $log->pushHandler(new StreamHandler($log_file, Logger::DEBUG));
+
+            // Append the SwiftMailer log to the log.
+            $log->addDebug($this->getLogs());
         }
 
-        if ($this->debug()) {
-            $log_msg = "Email sent to %s at %s -> %s\n%s";
-            $to = $this->jsonifyRecipients($message->getEmail()->getTo());
-            $msg = sprintf($log_msg, $to, date('Y-m-d H:i:s'), $status, $debug);
-            $this->log->addInfo($msg);
-        }
-
-        return $return;
+        return $result;
     }
 
     /**
@@ -118,9 +130,9 @@ class Email
      *
      * @param array $params
      * @param array $vars
-     * @return Message
+     * @return \Swift_Message
      */
-    public function buildMessage(array $params, array $vars = []): Message
+    public function buildMessage(array $params, array $vars = [])
     {
         /** @var Twig $twig */
         $twig = Grav::instance()['twig'];
@@ -133,14 +145,11 @@ class Email
         $language = Grav::instance()['language'];
 
         // Create message object.
-        $message = new Message();
-        $headers = $message->getEmail()->getHeaders();
-        $email = $message->getEmail();
+        $message = $this->message();
 
         // Extend parameters with defaults.
-        $defaults = [
+        $params += [
             'bcc' => $config->get('plugins.email.bcc', []),
-            'bcc_name' => $config->get('plugins.email.bcc_name'),
             'body' => $config->get('plugins.email.body', '{% include "forms/data.html.twig" %}'),
             'cc' => $config->get('plugins.email.cc', []),
             'cc_name' => $config->get('plugins.email.cc_name'),
@@ -158,12 +167,6 @@ class Email
             'message' => $message
         ];
 
-        foreach ($defaults as $key => $value) {
-            if (!key_exists($key, $params)) {
-                $params[$key] = $value;
-            }
-        }
-
         if (!$params['to']) {
             throw new \RuntimeException($language->translate('PLUGIN_EMAIL.PLEASE_CONFIGURE_A_TO_ADDRESS'));
         }
@@ -171,31 +174,61 @@ class Email
             throw new \RuntimeException($language->translate('PLUGIN_EMAIL.PLEASE_CONFIGURE_A_FROM_ADDRESS'));
         }
 
-
         // make email configuration available to templates
         $vars += [
             'email' => $params,
         ];
-
-        $params = $this->processParams($params, $vars);
 
         // Process parameters.
         foreach ($params as $key => $value) {
             switch ($key) {
                 case 'body':
                     if (is_string($value)) {
-                      $this->processBody($message, $params, $vars, $twig, $value);
+                        if (strpos($value, '{{') !== false || strpos($value, '{%') !== false) {
+                            $body = $twig->processString($value, $vars);
+                        } else {
+                            $body = $value;
+                        }
+
+                        if ($params['process_markdown'] && $params['content_type'] === 'text/html') {
+                            $parsedown = new Parsedown();
+                            $body = $parsedown->text($body);
+                        }
+
+                        if ($params['template']) {
+                            $body = $twig->processTemplate($params['template'], ['content' => $body] + $vars);
+                        }
+
+                        $content_type = !empty($params['content_type']) ? $twig->processString($params['content_type'], $vars) : null;
+                        $charset = !empty($params['charset']) ? $twig->processString($params['charset'], $vars) : null;
+
+                        $message->setBody($body, $content_type, $charset);
                     } elseif (is_array($value)) {
                         foreach ($value as $body_part) {
-                            $params_part = $params;
-                            if (isset($body_part['content_type'])) {
-                                $params_part['content_type'] = $body_part['content_type'];
+                            $body_part += [
+                                'charset' => $params['charset'],
+                                'content_type' => $params['content_type'],
+                            ];
+
+                            $body = !empty($body_part['body']) ? $twig->processString($body_part['body'], $vars) : null;
+
+                            if ($params['process_markdown'] && $body_part['content_type'] === 'text/html') {
+                                $parsedown = new Parsedown();
+                                $body = $parsedown->text($body);
                             }
+
                             if (isset($body_part['template'])) {
-                                $params_part['template'] = $body_part['template'];
+                                $body = $twig->processTemplate($body_part['template'], ['content' => $body] + $vars);
                             }
-                            if (isset($body_part['body'])) {
-                                $this->processBody($message, $params_part, $vars, $twig, $body_part['body']);
+
+                            $content_type = !empty($body_part['content_type']) ? $twig->processString($body_part['content_type'], $vars) : null;
+                            $charset = !empty($body_part['charset']) ? $twig->processString($body_part['charset'], $vars) : null;
+
+                            if (!$message->getBody()) {
+                                $message->setBody($body, $content_type, $charset);
+                            }
+                            else {
+                                $message->addPart($body, $content_type, $charset);
                             }
                         }
                     }
@@ -203,34 +236,68 @@ class Email
 
                 case 'subject':
                     if ($value) {
-                        $message->subject($language->translate($value));
+                        $message->setSubject($twig->processString($language->translate($value), $vars));
                     }
                     break;
 
                 case 'to':
-                case 'from':
+                    if (is_string($value) && !empty($params['to_name'])) {
+                        $value = [
+                            'mail' => $twig->processString($value, $vars),
+                            'name' => $twig->processString($params['to_name'], $vars),
+                        ];
+                    }
+
+                    foreach ($this->parseAddressValue($value, $vars) as $address) {
+                        $message->addTo($address->mail, $address->name);
+                    }
+                    break;
+
                 case 'cc':
+                    if (is_string($value) && !empty($params['cc_name'])) {
+                        $value = [
+                            'mail' => $twig->processString($value, $vars),
+                            'name' => $twig->processString($params['cc_name'], $vars),
+                        ];
+                    }
+
+                    foreach ($this->parseAddressValue($value, $vars) as $address) {
+                        $message->addCc($address->mail, $address->name);
+                    }
+                    break;
+
                 case 'bcc':
+                    foreach ($this->parseAddressValue($value, $vars) as $address) {
+                        $message->addBcc($address->mail, $address->name);
+                    }
+                    break;
+
+                case 'from':
+                    if (is_string($value) && !empty($params['from_name'])) {
+                        $value = [
+                            'mail' => $twig->processString($value, $vars),
+                            'name' => $twig->processString($params['from_name'], $vars),
+                        ];
+                    }
+
+                    foreach ($this->parseAddressValue($value, $vars) as $address) {
+                        $message->addFrom($address->mail, $address->name);
+                    }
+                    break;
+
                 case 'reply_to':
-                    if ($recipients = $this->processRecipients($key, $params)) {
-                        $key = $key === 'reply_to' ? 'replyTo' : $key;
-                        $email->$key(...$recipients);
+                    if (is_string($value) && !empty($params['reply_to_name'])) {
+                        $value = [
+                            'mail' => $twig->processString($value, $vars),
+                            'name' => $twig->processString($params['reply_to_name'], $vars),
+                        ];
+                    }
+
+                    foreach ($this->parseAddressValue($value, $vars) as $address) {
+                        $message->addReplyTo($address->mail, $address->name);
                     }
                     break;
-                case 'tags':
-                    foreach ((array) $value as $tag) {
-                        if (is_string($tag)) {
-                            $headers->add(new TagHeader($tag));
-                        }
-                    }
-                    break;
-                case 'metadata':
-                    foreach ((array) $value as $k => $v) {
-                        if (is_string($k) && is_string($v)) {
-                            $headers->add(new MetadataHeader($k, $v));
-                        }
-                    }
-                    break;
+
             }
         }
 
@@ -238,283 +305,260 @@ class Email
     }
 
     /**
-     * @param string $type
-     * @param array $params
+     * Return parsed e-mail address value.
+     *
+     * @param string|string[] $value
+     * @param array $vars
      * @return array
      */
-    protected function processRecipients(string $type, array $params): array
+    public function parseAddressValue($value, array $vars = [])
     {
-        if (array_key_exists($type, $params) && $params[$type] === null) {
-            return [];
+        $parsed = [];
+
+        /** @var Twig $twig */
+        $twig = Grav::instance()['twig'];
+
+        // Single e-mail address string
+        if (is_string($value)) {
+            $parsed[] = (object) [
+                'mail' => $twig->processString($value, $vars),
+                'name' => null,
+            ];
         }
 
-        $recipients = $params[$type] ?? Grav::instance()['config']->get('plugins.email.'.$type) ?? [];
+        else {
+            // Cast value as array
+            $value = (array) $value;
 
-        $list = [];
+            // Single e-mail address array
+            if (!empty($value['mail'])) {
+                $parsed[] = (object) [
+                    'mail' => $twig->processString($value['mail'], $vars),
+                    'name' => !empty($value['name']) ? $twig->processString($value['name'], $vars) : NULL,
+                ];
+            }
 
-        if (!empty($recipients)) {
-            if (is_array($recipients)) {
-                if (Utils::isAssoc($recipients) || (count($recipients) ===2 && $this->isValidEmail($recipients[0]) && !$this->isValidEmail($recipients[1]))) {
-                    $list[] = $this->createAddress($recipients);
-                } else {
-                    foreach ($recipients as $recipient) {
-                        $list[] = $this->createAddress($recipient);
+            // Multiple addresses (either as strings or arrays)
+            elseif (!(empty($value['mail']) && !empty($value['name']))) {
+                foreach ($value as $y => $itemx) {
+                    $addresses = $this->parseAddressValue($itemx, $vars);
+
+                    if (($address = reset($addresses))) {
+                        $parsed[] = $address;
                     }
-                }
-            } else {
-                if (is_string($recipients) && Utils::contains($recipients, ',')) {
-                    $recipients = array_map('trim', explode(',', $recipients));
-                    foreach ($recipients as $recipient) {
-                        $list[] = $this->createAddress($recipient);
-                    }
-                } else {
-                    if (!Utils::contains($recipients, ['<','>']) && (isset($params[$type."_name"]))) {
-                        $recipients = [$recipients, $params[$type."_name"]];
-                    }
-                    $list[] = $this->createAddress($recipients);
                 }
             }
         }
 
-
-        return $list;
+        return $parsed;
     }
 
     /**
-     * @param $data
-     * @return Address
+     * Return debugging logs if enabled
+     *
+     * @return string
      */
-    protected function createAddress($data): Address
+    public function getLogs()
     {
-        if (is_string($data)) {
-            preg_match('/^(.*)\<(.*)\>$/', $data, $matches);
-            if (isset($matches[2])) {
-                $email = trim($matches[2]);
-                $name = trim($matches[1]);
-            } else {
-                $email = $data;
-                $name = '';
-            }
-        } elseif (Utils::isAssoc($data)) {
-            $first_key = array_key_first($data);
-            if (filter_var($first_key, FILTER_VALIDATE_EMAIL)) {
-                $email = $first_key;
-                $name = $data[$first_key];
-            } else {
-                $email = $data['email'] ?? $data['mail'] ?? $data['address'] ?? '';
-                $name = $data['name'] ?? $data['fullname'] ?? '';
-            }
-        } else {
-            $email = $data[0] ?? '';
-            $name = $data[1] ?? '';
+        if ($this->debug()) {
+            return $this->logger->dump();
         }
-        return new Address($email, $name);
+        return '';
     }
 
     /**
-     * @return null|Mailer
      * @internal
+     * @return null|\Swift_Mailer
      */
-    protected function initMailer(): ?Mailer
+    protected function getMailer()
     {
         if (!$this->enabled()) {
             return null;
         }
+
         if (!$this->mailer) {
-            $this->transport = $this->getTransport();
+            /** @var Config $config */
+            $config = Grav::instance()['config'];
+            $queue_enabled = $config->get('plugins.email.queue.enabled');
+
+            $transport = $queue_enabled === true ? $this->getQueue() : $this->getTransport();
+
             // Create the Mailer using your created Transport
-            $this->mailer = new Mailer($this->transport);
+            $this->mailer = new \Swift_Mailer($transport);
+
+            // Register the logger if we're debugging.
+            if ($this->debug()) {
+                $this->logger = new \Swift_Plugins_Loggers_ArrayLogger();
+                $this->mailer->registerPlugin(new \Swift_Plugins_LoggerPlugin($this->logger));
+            }
         }
+
         return $this->mailer;
     }
 
-    /**
-     * @return void
-     * @throws \Exception
-     */
-    protected function initLog()
+    protected static function getQueuePath()
     {
-        $log_file = Grav::instance()['locator']->findResource('log://email.log', true, true);
-        $this->log = new Logger('email');
-        /** @var UniformResourceLocator $locator */
-        $this->log->pushHandler(new StreamHandler($log_file, Logger::DEBUG));
+        $queue_path = Grav::instance()['locator']->findResource('user://data', true) . '/email-queue';
+
+        if (!file_exists($queue_path)) {
+            mkdir($queue_path);
+        }
+
+        return $queue_path;
     }
 
-    /**
-     * @param array $params
-     * @param array $vars
-     * @return array
-     */
-    protected function processParams(array $params, array $vars = []): array
+    protected static function getQueue()
     {
-        $twig = Grav::instance()['twig'];
-        array_walk_recursive($params, function(&$value) use ($twig, $vars) {
-            if (is_string($value)) {
-                $value = $twig->processString($value, $vars);
-            }
-        });
-        return $params;
-    }
+        $queue_path = static::getQueuePath();
 
-    /**
-     * @param $message
-     * @param $params
-     * @param $vars
-     * @param $twig
-     * @param $body
-     * @return void
-     */
-    protected function processBody($message, $params, $vars, $twig, $body)
-    {
-        if ($params['process_markdown'] && $params['content_type'] === 'text/html') {
-            $body = (new Parsedown())->text($body);
-        }
-
-        if ($params['template']) {
-            $body = $twig->processTemplate($params['template'], ['content' => $body] + $vars);
-        }
-
-        $content_type = !empty($params['content_type']) ? $twig->processString($params['content_type'], $vars) : null;
-
-        if ($content_type === 'text/html') {
-            $message->html($body);
-        } else {
-            $message->text($body);
-        }
-    }
-
-    /**
-     * @return TransportInterface
-     */
-    protected static function getTransport(): Transport\TransportInterface
-    {
-        /** @var Config $config */
-        $config = Grav::instance()['config'];
-        $engine = $config->get('plugins.email.mailer.engine');
-        $dsn = 'null://default';
-
-
-        // Create the Transport and initialize it.
-        switch ($engine) {
-            case 'smtps':
-            case 'smtp':
-                $options = $config->get('plugins.email.mailer.smtp');
-                $dsn = $engine . '://';
-                $auth = '';
-
-                if (isset($options['encryption']) && $options['encryption'] === 'none') {
-                    $options['options']['verify_peer'] = 0;
-                }
-                if (isset($options['user'])) {
-                    $auth .= urlencode($options['user']);
-                }
-                if (isset($options['password'])) {
-                    $auth .= ':'. urlencode($options['password']);
-                }
-                if (!empty($auth)) {
-                    $dsn .= "$auth@";
-                }
-                if (isset($options['server'])) {
-                    $dsn .= urlencode($options['server']);
-                }
-                if (isset($options['port'])) {
-                    $dsn .= ":{$options['port']}";
-                }
-                if (isset($options['options'])) {
-                    $dsn .= '?' . http_build_query($options['options']);
-                }
-                break;
-            case 'mail':
-            case 'native':
-                $dsn = 'native://default';
-                break;
-            case 'sendmail':
-                $dsn = 'sendmail://default';
-                $bin = $config->get('plugins.email.mailer.sendmail.bin');
-                if (isset($bin)) {
-                    $dsn .= '?command=' . urlencode($bin);
-                }
-                break;
-            default:
-                $e = new Event(['engine' => $engine, ]);
-                Grav::instance()->fireEvent('onEmailTransportDsn', $e);
-                if (isset($e['dsn'])) {
-                    $dsn = $e['dsn'];
-                }
-                break;
-        }
-
-        if ($dsn instanceof TransportInterface) {
-            $transport = $dsn;
-        } else {
-           $transport = Transport::fromDsn($dsn) ;
-        }
+        $spool = new \Swift_FileSpool($queue_path);
+        $transport = new \Swift_SpoolTransport($spool);
 
         return $transport;
     }
 
-    /**
-     * @param array $recipients
-     * @return string
-     */
-    protected function jsonifyRecipients(array $recipients): string
+    public static function flushQueue()
     {
-        $json = [];
-        foreach ($recipients as $recipient) {
-            $json[] = str_replace('"', "", $recipient->toString());
+        $grav = Grav::instance();
+
+        $grav['debugger']->enabled(false);
+
+        $config = $grav['config']->get('plugins.email.queue');
+
+        try {
+            $queue = static::getQueue();
+            $spool = $queue->getSpool();
+            $spool->setMessageLimit($config['flush_msg_limit']);
+            $spool->setTimeLimit($config['flush_time_limit']);
+            $failures = [];
+            $result = $spool->flushQueue(static::getTransport(), $failures);
+            return $result . ' messages flushed from queue...';
+        } catch (\Exception $e) {
+            $grav['log']->error($e->getMessage());
+            return $e->getMessage();
         }
-        return json_encode($json);
+
     }
 
-    protected function isValidEmail($email): bool
+    public static function clearQueueFailures()
     {
-        return is_string($email) && filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
+        $grav = Grav::instance();
+        $grav['debugger']->enabled(false);
+
+        $preferences = \Swift_Preferences::getInstance();
+        $preferences->setTempDir(sys_get_temp_dir());
+
+        /** @var \Swift_Transport $transport */
+        $transport = static::getTransport();
+        if (!$transport->isStarted()) {
+            $transport->start();
+        }
+
+        $queue_path = static::getQueuePath();
+
+        foreach (new \GlobIterator($queue_path . '/*.sending') as $file) {
+            $final_message = $file->getPathname();
+
+            /** @var \Swift_Message $message */
+            $message = unserialize(file_get_contents($final_message));
+
+            echo(sprintf(
+                'Retrying "%s" to "%s"',
+                $message->getSubject(),
+                implode(', ', array_keys($message->getTo()))
+            ) . "\n");
+
+            try {
+                $clean = static::cloneMessage($message);
+                $transport->send($clean);
+                echo("sent!\n");
+
+                // DOn't want to trip up any errors from sending too fast
+                sleep(1);
+            } catch (\Swift_TransportException $e) {
+                echo("ERROR: Send failed - deleting spooled message\n");
+            }
+
+            // Remove the file
+            unlink($final_message);
+        }
     }
 
     /**
-     * @return void
-     * @deprecated 4.0 Switched from Swiftmailer to Symfony/Mailer - No longer supported
-     */
-    public static function flushQueue() {}
-
-    /**
-     * @return void
-     * @deprecated 4.0 Switched from Swiftmailer to Symfony/Mailer - No longer supported
-     */
-    public static function clearQueueFailures() {}
-
-        /**
-     * Creates an attachment.
+     * Clean copy a message
      *
-     * @param string $data
-     * @param string $filename
-     * @param string $contentType
-     * @deprecated 4.0 Switched from Swiftmailer to Symfony/Mailer - No longer supported
-     * @return void
+     * @param \Swift_Message $message
      */
-    public function attachment($data = null, $filename = null, $contentType = null) {}
+    public static function cloneMessage($message)
+    {
+        $clean = new \Swift_Message();
 
-    /**
-     * Creates an embedded attachment.
-     *
-     * @param string $data
-     * @param string $filename
-     * @param string $contentType
-     * @deprecated 4.0 Switched from Swiftmailer to Symfony/Mailer - No longer supported
-     * @return void
-     */
-    public function embedded($data = null, $filename = null, $contentType = null) {}
+        $clean->setBoundary($message->getBoundary());
+        $clean->setBcc($message->getBcc());
+        $clean->setBody($message->getBody());
+        $clean->setCharset($message->getCharset());
+        $clean->setChildren($message->getChildren());
+        $clean->setContentType($message->getContentType());
+        $clean->setCc($message->getCc());
+        $clean->setDate($message->getDate());
+        $clean->setDescription($message->getDescription());
+        $clean->setEncoder($message->getEncoder());
+        $clean->setFormat($message->getFormat());
+        $clean->setFrom($message->getFrom());
+        $clean->setId($message->getId());
+        $clean->setMaxLineLength($message->getMaxLineLength());
+        $clean->setPriority($message->getPriority());
+        $clean->setReplyTo($message->getReplyTo());
+        $clean->setReturnPath($message->getReturnPath());
+        $clean->setSender($message->getSender());
+        $clean->setSubject($message->getSubject());
+        $clean->setTo($message->getTo());
+        $clean->setAuthMode($message->getAuthMode());
 
+        return $clean;
 
-    /**
-     * Creates an image attachment.
-     *
-     * @param string $data
-     * @param string $filename
-     * @param string $contentType
-     * @deprecated 4.0 Switched from Swiftmailer to Symfony/Mailer - No longer supported
-     * @return void
-     */
-    public function image($data = null, $filename = null, $contentType = null) {}
+    }
 
+    protected static function getTransport()
+    {
+        /** @var Config $config */
+        $config = Grav::instance()['config'];
+
+        $engine = $config->get('plugins.email.mailer.engine');
+
+        // Create the Transport and initialize it.
+        switch ($engine) {
+            case 'smtp':
+                $transport = new \Swift_SmtpTransport();
+
+                $options = $config->get('plugins.email.mailer.smtp');
+                if (!empty($options['server'])) {
+                    $transport->setHost($options['server']);
+                }
+                if (!empty($options['port'])) {
+                    $transport->setPort($options['port']);
+                }
+                if (!empty($options['encryption']) && $options['encryption'] !== 'none') {
+                    $transport->setEncryption($options['encryption']);
+                }
+                if (!empty($options['user'])) {
+                    $transport->setUsername($options['user']);
+                }
+                if (!empty($options['password'])) {
+                    $transport->setPassword($options['password']);
+                }
+                if (!empty($options['auth_mode'])) {
+                    $transport->setAuthMode($options['auth_mode']);
+                }
+                break;
+            case 'sendmail':
+            default:
+                $options = $config->get('plugins.email.mailer.sendmail');
+                $bin = !empty($options['bin']) ? $options['bin'] : '/usr/sbin/sendmail';
+                $transport = new \Swift_SendmailTransport($bin);
+                break;
+        }
+
+        return $transport;
+    }
 }

@@ -12,7 +12,6 @@ use Grav\Common\Flex\Types\Pages\PageCollection;
 use Grav\Common\Flex\Types\Pages\PageIndex;
 use Grav\Common\Flex\Types\Pages\PageObject;
 use Grav\Common\Grav;
-use Grav\Common\Helpers\Excerpts;
 use Grav\Common\Language\Language;
 use Grav\Common\Page\Interfaces\PageInterface;
 use Grav\Common\Uri;
@@ -121,9 +120,9 @@ class AdminController
     /**
      * Unknown task, call onFlexTask[NAME] event.
      *
-     * @return void
+     * @return bool
      */
-    public function taskDefault(): void
+    public function taskDefault(): bool
     {
         $type = $this->target;
         $directory = $this->getDirectory($type);
@@ -144,7 +143,6 @@ class AdminController
                     'directory' => $directory,
                     'object' => $object,
                     'data' => $this->data,
-                    'user' => $this->user,
                     'redirect' => $this->redirect
                 ]
             );
@@ -162,15 +160,19 @@ class AdminController
             if ($redirect) {
                 $this->setRedirect($redirect);
             }
+
+            return $event->isPropagationStopped();
         }
+
+        return false;
     }
 
     /**
      * Default action, onFlexAction[NAME] event.
      *
-     * @return void
+     * @return bool
      */
-    public function actionDefault(): void
+    public function actionDefault(): bool
     {
         $type = $this->target;
         $directory = $this->getDirectory($type);
@@ -190,7 +192,6 @@ class AdminController
                     'flex' => $this->getFlex(),
                     'directory' => $directory,
                     'object' => $object,
-                    'user' => $this->user,
                     'redirect' => $this->redirect
                 ]
             );
@@ -208,15 +209,19 @@ class AdminController
             if ($redirect) {
                 $this->setRedirect($redirect);
             }
+
+            return $event->isPropagationStopped();
         }
+
+        return false;
     }
 
     /**
      * Get datatable for list view.
      *
-     * @return ResponseInterface|null
+     * @return void
      */
-    public function actionList(): ?ResponseInterface
+    public function actionList(): void
     {
         $directory = $this->getDirectory();
         if (!$directory) {
@@ -243,28 +248,28 @@ class AdminController
 
             $table = $this->getFlex()->getDataTable($directory, $options);
 
-            return $this->createJsonResponse($table->jsonSerialize());
-        }
+            $response = $this->createJsonResponse($table->jsonSerialize());
 
-        return null;
+            $this->close($response);
+        }
     }
 
     /**
      * Alias for Export action.
      *
-     * @return ResponseInterface|null
+     * @return void
      */
-    public function actionCsv(): ?ResponseInterface
+    public function actionCsv(): void
     {
-        return $this->actionExport();
+        $this->actionExport();
     }
 
     /**
      * Export action. Defaults to CVS export.
      *
-     * @return ResponseInterface|null
+     * @return void
      */
-    public function actionExport(): ?ResponseInterface
+    public function actionExport(): void
     {
         $collection = $this->getCollection();
         if (!$collection) {
@@ -336,15 +341,15 @@ class AdminController
             $formatter->encode($list)
         );
 
-        return $response;
+        $this->close($response);
     }
 
     /**
      * Delete object from directory.
      *
-     * @return void
+     * @return ObjectInterface|bool
      */
-    public function taskDelete(): void
+    public function taskDelete()
     {
         $directory = $this->getDirectory();
         if (!$directory) {
@@ -381,6 +386,8 @@ class AdminController
 
             $this->setRedirect($this->referrerRoute->toString(true), 302);
         }
+
+        return $object !== null;
     }
 
     /**
@@ -475,10 +482,6 @@ class AdminController
         }
     }
 
-    /**
-     * @param FlexDirectoryInterface $directory
-     * @return void
-     */
     protected function continue(FlexDirectoryInterface $directory): void
     {
         $config = $directory->getConfig('admin');
@@ -622,10 +625,10 @@ class AdminController
      *
      * Route: /pages
      *
-     * @return void
+     * @return bool True if the action was performed.
      * @throws RuntimeException
      */
-    protected function taskCopy(): void
+    protected function taskCopy(): bool
     {
         try {
             $directory = $this->getDirectory();
@@ -677,6 +680,8 @@ class AdminController
             $this->admin->setMessage($this->admin::translate(['PLUGIN_FLEX_OBJECTS.CONTROLLER.TASK_COPY_FAILURE', $e->getMessage()]), 'error');
             $this->setRedirect($this->referrerRoute->toString(true), 302);
         }
+
+        return true;
     }
 
     /**
@@ -816,17 +821,17 @@ class AdminController
     }
 
     /**
-     * @return void
+     * @return bool
      */
-    public function taskSaveas(): void
+    public function taskSaveas(): bool
     {
-        $this->taskSave();
+        return $this->taskSave();
     }
 
     /**
-     * @return void
+     * @return bool
      */
-    public function taskSave(): void
+    public function taskSave(): bool
     {
         $directory = $this->getDirectory();
         if (!$directory) {
@@ -907,7 +912,6 @@ class AdminController
             // Set route to point to the current page.
             if (!$this->redirect) {
                 $postAction = $request->getParsedBody()['_post_entries_save'] ?? 'edit';
-                $this->grav['session']->post_entries_save = $postAction;
                 if ($postAction === 'create-new') {
                     // Create another.
                     $route = $this->referrerRoute->withGravParam('action', null)->withGravParam('', 'add');
@@ -981,12 +985,14 @@ class AdminController
             // $this->setRedirect($this->referrerRoute->withQueryParam('uid', $flash->getUniqueId())->toString(true), 302);
             $this->setRedirect($this->referrerRoute->toString(true), 302);
         }
+
+        return true;
     }
 
     /**
-     * @return void
+     * @return bool
      */
-    public function taskConfigure(): void
+    public function taskConfigure(): bool
     {
         $directory = $this->getDirectory();
         if (!$directory) {
@@ -1034,152 +1040,161 @@ class AdminController
             $this->admin->setMessage($this->admin::translate(['PLUGIN_FLEX_OBJECTS.CONTROLLER.TASK_CONFIGURE_FAILURE', $e->getMessage()]), 'error');
             $this->setRedirect($this->referrerRoute->toString(true), 302);
         }
+
+        return true;
     }
 
     /**
-     * Used in 3rd party editors (e.g. next-gen).
-     *
-     * @return ResponseInterface
+     * @return bool
      */
-    public function actionConvertUrls(): ResponseInterface
+    public function taskMediaList(): bool
     {
         $directory = $this->getDirectory();
         if (!$directory) {
             throw new RuntimeException('Not Found', 404);
         }
 
-        $key = $this->id;
+        try {
+            $response = $this->forwardMediaTask('action', 'media.list');
 
-        $object = $this->getObject($key);
-        if (!$object instanceof PageInterface) {
+            $this->admin->json_response = json_decode($response->getBody(), false, 512, JSON_THROW_ON_ERROR);
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
+
+        return true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function taskMediaUpload(): bool
+    {
+        $directory = $this->getDirectory();
+        if (!$directory) {
             throw new RuntimeException('Not Found', 404);
         }
 
-        $authorized = $object instanceof FlexAuthorizeInterface
-            ? $object->isAuthorized('read', 'admin', $this->user)
-            : $directory->isAuthorized($object->exists() ? 'read' : 'create', 'admin', $this->user);
+        try {
+            $response = $this->forwardMediaTask('task', 'media.upload');
 
-        if (!$authorized) {
-            throw new RuntimeException($this->admin::translate('PLUGIN_ADMIN.INSUFFICIENT_PERMISSIONS_FOR_TASK') . ' save.',
-                403);
+            $this->admin->json_response = json_decode($response->getBody(), false, 512, JSON_THROW_ON_ERROR);
+        } catch (Exception $e) {
+            die($e->getMessage());
         }
 
-        $request = $this->getRequest();
-        $data = $request->getParsedBody();
+        return true;
+    }
 
-        $data['data'] = json_decode($data['data'] ?? '{}', true, 512, JSON_THROW_ON_ERROR);
-        if (!isset($data['data'])) {
-            throw new RequestException($request, 'Bad Request', 400);
+    /**
+     * @return bool
+     */
+    public function taskMediaDelete(): bool
+    {
+        $directory = $this->getDirectory();
+        if (!$directory) {
+            throw new RuntimeException('Not Found', 404);
         }
 
-        $converted_links = [];
-        foreach ($data['data']['a'] ?? [] as $link) {
-            $converted_links[$link] = Excerpts::processLinkHtml($link, $object);
+        try {
+            $response = $this->forwardMediaTask('task', 'media.delete');
+
+            $this->admin->json_response = json_decode($response->getBody(), false, 512, JSON_THROW_ON_ERROR);
+        } catch (Exception $e) {
+            die($e->getMessage());
         }
 
-        $converted_images = [];
-        foreach ($data['data']['img'] ?? [] as $image) {
-            $converted_images[$image] = Excerpts::processImageHtml($image, $object);
-        }
-
-        $json = [
-            'status'  => 'success',
-            'message' => 'All links converted',
-            'data' => ['links' => $converted_links, 'images' => $converted_images]
-        ];
-
-        return $this->createJsonResponse($json, 200);
+        return true;
     }
 
     /**
-     * @return ResponseInterface
+     * @return bool
      */
-    public function taskMediaList(): ResponseInterface
-    {
-        return $this->forwardMediaTask('action', 'media.list');
-    }
-
-    /**
-     * @return ResponseInterface
-     */
-    public function taskMediaUpload(): ResponseInterface
-    {
-        return $this->forwardMediaTask('task', 'media.upload');
-    }
-
-    /**
-     * @return ResponseInterface
-     */
-    public function taskMediaUploadMeta(): ResponseInterface
-    {
-        return $this->forwardMediaTask('task', 'media.upload.meta');
-    }
-
-    /**
-     * @return ResponseInterface
-     */
-    public function taskMediaReorder(): ResponseInterface
-    {
-        return $this->forwardMediaTask('task', 'media.reorder');
-    }
-
-    /**
-     * @return ResponseInterface
-     */
-    public function taskMediaDelete(): ResponseInterface
-    {
-        return $this->forwardMediaTask('task', 'media.delete');
-    }
-
-    /**
-     * @return ResponseInterface
-     */
-    public function taskListmedia(): ResponseInterface
+    public function taskListmedia(): bool
     {
         return $this->taskMediaList();
     }
 
     /**
-     * @return ResponseInterface
+     * @return bool
      */
-    public function taskAddmedia(): ResponseInterface
+    public function taskAddmedia(): bool
     {
-        return $this->forwardMediaTask('task', 'media.copy');
+        $directory = $this->getDirectory();
+        if (!$directory) {
+            throw new RuntimeException('Not Found', 404);
+        }
+
+        try {
+            $response = $this->forwardMediaTask('task', 'media.copy');
+
+            $this->admin->json_response = json_decode($response->getBody(), false, 512, JSON_THROW_ON_ERROR);
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
+
+        return true;
     }
 
     /**
-     * @return ResponseInterface
+     * @return bool
      */
-    public function taskDelmedia(): ResponseInterface
+    public function taskDelmedia(): bool
     {
-        return $this->forwardMediaTask('task', 'media.remove');
+        $directory = $this->getDirectory();
+        if (!$directory) {
+            throw new RuntimeException('Not Found', 404);
+        }
+
+        try {
+            $response = $this->forwardMediaTask('task', 'media.remove');
+
+            $this->admin->json_response = json_decode($response->getBody(), false, 512, JSON_THROW_ON_ERROR);
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
+
+        return true;
     }
 
     /**
-     * @return ResponseInterface
+     * @return bool
      * @deprecated Do not use
      */
-    public function taskFilesUpload(): ResponseInterface
+    public function taskFilesUpload(): bool
     {
         throw new RuntimeException('Task filesUpload should not be called!');
     }
 
     /**
      * @param string|null $filename
-     * @return ResponseInterface
+     * @return bool
      * @deprecated Do not use
      */
-    public function taskRemoveMedia($filename = null): ResponseInterface
+    public function taskRemoveMedia($filename = null): bool
     {
         throw new RuntimeException('Task removeMedia should not be called!');
     }
 
     /**
-     * @return ResponseInterface
+     * @return bool
      */
-    public function taskGetFilesInFolder(): ResponseInterface
+    public function taskGetFilesInFolder(): bool
     {
-        return $this->forwardMediaTask('action', 'media.picker');
+        $directory = $this->getDirectory();
+        if (!$directory) {
+            throw new RuntimeException('Not Found', 404);
+        }
+
+        try {
+            $response = $this->forwardMediaTask('action', 'media.picker');
+
+            $this->admin->json_response = json_decode($response->getBody(), false, 512, JSON_THROW_ON_ERROR);
+        } catch (Exception $e) {
+            $this->admin->json_response = ['success' => false, 'error' => $e->getMessage()];
+        }
+
+        return true;
     }
 
     /**
@@ -1189,18 +1204,12 @@ class AdminController
      */
     protected function forwardMediaTask(string $type, string $name): ResponseInterface
     {
-        $directory = $this->getDirectory();
-        if (!$directory) {
-            throw new RuntimeException('Not Found', 404);
-        }
-
-        $route = Uri::getCurrentRoute()->withGravParam('task', null);
+        $route = Uri::getCurrentRoute()->withGravParam('task', null)->withGravParam($type, $name);
         $object = $this->getObject();
 
         /** @var ServerRequest $request */
         $request = $this->grav['request'];
         $request = $request
-            ->withAttribute($type, $name)
             ->withAttribute('type', $this->target)
             ->withAttribute('key', $this->id)
             ->withAttribute('storage_key', $object && $object->exists() ? $object->getStorageKey() : null)
@@ -1311,11 +1320,7 @@ class AdminController
         // Post
         $post = $_POST;
         if (isset($post['data'])) {
-            $data = $post['data'];
-            if (is_string($data)) {
-                $data = json_decode($data, true);
-            }
-            $this->data = $this->getPost($data);
+            $this->data = $this->getPost($post['data']);
             unset($post['data']);
         }
 
@@ -1578,8 +1583,6 @@ class AdminController
                 $this->object = $object ? $object->getForm()->getObject() : false;
             }
         }
-
-        $this->grav->fireEvent('onAdminObjectGet', new Event(['object' => $this->object]));
 
         return $this->object ?: null;
     }

@@ -9,9 +9,7 @@
 
 namespace Grav\Plugin\Login\TwoFactorAuth;
 
-use BaconQrCode\Renderer\Image\SvgImageBackEnd;
-use BaconQrCode\Renderer\ImageRenderer as BaconImageRenderer;
-use BaconQrCode\Renderer\RendererStyle\RendererStyle as BaconRendererStyle;
+use BaconQrCode\Renderer\Image\Png as BaconPng;
 use BaconQrCode\Writer as BaconWriter;
 use RobThree\Auth\Providers\Qr\IQRCodeProvider;
 
@@ -19,16 +17,14 @@ class BaconQrProvider implements IQRCodeProvider
 {
     public function getMimeType()
     {
-        return 'image/svg+xml';
+        return 'image/png';
     }
 
     public function getQRCodeImage($qrtext, $size = 256)
     {
-        $renderer = new BaconImageRenderer(
-            new BaconRendererStyle((int) $size),
-            new SvgImageBackEnd()
-        );
-
+        $renderer = new BaconPng();
+        $renderer->setHeight($size);
+        $renderer->setWidth($size);
         $writer = new BaconWriter($renderer);
 
         return $writer->writeString($qrtext);

@@ -3,9 +3,7 @@ namespace Grav\Plugin;
 
 use Composer\Autoload\ClassLoader;
 use Grav\Common\Data\Data;
-use Grav\Common\Grav;
 use Grav\Common\Plugin;
-use Grav\Common\Utils;
 use Grav\Plugin\Email\Email;
 use RocketTheme\Toolbox\Event\Event;
 
@@ -69,6 +67,8 @@ class EmailPlugin extends Plugin
         /** @var Data $obj */
         $obj = $event['object'];
 
+
+
         if ($obj instanceof Data && $obj->blueprints()->getFilename() === 'email/blueprints') {
             $current_pw = $this->grav['config']->get('plugins.email.mailer.smtp.password');
             $new_pw = $obj->get('mailer.smtp.password');
@@ -109,7 +109,7 @@ class EmailPlugin extends Plugin
 
                 $this->grav->fireEvent('onEmailSend', new Event(['params' => &$params, 'vars' => &$vars]));
 
-                if (Utils::isAssoc($params)) {
+                if ($this->isAssocArray($params)) {
                     $this->sendFormEmail($form, $params, $vars);
                 } else {
                     foreach ($params as $email) {
@@ -121,11 +121,29 @@ class EmailPlugin extends Plugin
         }
     }
 
+    /**
+     * Add index job to Grav Scheduler
+     * Requires Grav 1.6.0 - Scheduler
+     */
+    public function onSchedulerInitialized(Event $e)
+    {
+        if ($this->config->get('plugins.email.queue.enabled')) {
+
+            /** @var Scheduler $scheduler */
+            $scheduler = $e['scheduler'];
+            $at = $this->config->get('plugins.email.queue.flush_frequency');
+            $logs = 'logs/email-queue.out';
+            $job = $scheduler->addFunction('Grav\Plugin\Email\Email::flushQueue', [], 'email-flushqueue');
+            $job->at($at);
+            $job->output($logs);
+            $job->backlink('/plugins/email');
+        }
+    }
+
     protected function sendFormEmail($form, $params, $vars)
     {
         // Build message
         $message = $this->email->buildMessage($params, $vars);
-        $locator = $this->grav['locator'];
 
         if (isset($params['attachments'])) {
             $filesToAttach = (array)$params['attachments'];
@@ -136,13 +154,11 @@ class EmailPlugin extends Plugin
                     if (isset($fileValues['file'])) {
                         $filename = $fileValues['file'];
                     } else {
-                        $filename = $fileValues['path'];
+                        $filename = ROOT_DIR . $fileValues['path'];
                     }
 
-                    $filename = $locator->findResource($filename, true, true);
-
                     try {
-                        $message->attachFromPath($filename);
+                        $message->attach(\Swift_Attachment::fromPath($filename));
                     } catch (\Exception $e) {
                         // Log any issues
                         $this->grav['log']->error($e->getMessage());
@@ -161,30 +177,12 @@ class EmailPlugin extends Plugin
         $this->grav->fireEvent('onEmailSent', new Event(['message' => $message, 'params' => $params, 'form' => $form]));
     }
 
-    /**
-     * Used for dynamic blueprint field
-     *
-     * @return array
-     */
-    public static function getEngines(): array
+    protected function isAssocArray(array $arr)
     {
-        $engines = (object) [
-            'sendmail' => 'Sendmail',
-            'smtp' => 'SMTP',
-            'smtps' => 'SMTPS',
-            'native' => 'Native',
-            'none' => 'PLUGIN_ADMIN.DISABLED',
-        ];
-        Grav::instance()->fireEvent('onEmailEngines', new Event(['engines' => $engines]));
-        return (array) $engines;
-    }
-
-    /**
-     * @deprecated 4.0 Switched from Swiftmailer to Symfony/Mailer - No longer supported
-     */
-    public function onSchedulerInitialized(Event $e)
-    {
-
+        if (array() === $arr) return false;
+        $keys = array_keys($arr);
+        $index_keys = range(0, count($arr) - 1);
+        return $keys !== $index_keys;
     }
 
 }

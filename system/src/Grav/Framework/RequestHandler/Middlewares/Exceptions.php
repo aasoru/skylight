@@ -1,11 +1,13 @@
-<?php declare(strict_types=1);
+<?php
 
 /**
  * @package    Grav\Framework\RequestHandler
  *
- * @copyright  Copyright (c) 2015 - 2023 Trilby Media, LLC. All rights reserved.
+ * @copyright  Copyright (c) 2015 - 2022 Trilby Media, LLC. All rights reserved.
  * @license    MIT License; see LICENSE file for details.
  */
+
+declare(strict_types=1);
 
 namespace Grav\Framework\RequestHandler\Middlewares;
 

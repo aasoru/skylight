@@ -6,7 +6,28 @@ media_order: bg.jpg
 menu: 'Our Works'
 ---
 
-<div class="container text-center">
+<div class="text-center">
+    <!--<div class="row">
+        <div class="col-lg-4 col-md-6 col-sm-12 p-0">
+            <img src="/img/hierba_alta.jpg" style="width:100%" class="zoomable" />
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12 p-0">
+            <img src="/img/reel_2023.jpg" style="width:100%" class="zoomable" />
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12 p-0">
+            <img src="/img/pecto.jpg" style="width:100%" class="zoomable" />
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12 p-0">
+            <img src="/img/novum.jpg" style="width:100%" class="zoomable" />
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12 p-0">
+            <img src="/img/contable.jpg" style="width:100%" class="zoomable" />
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-12 p-0">
+            <img src="/img/fratum.jpg" style="width:100%" class="zoomable" />
+        </div>
+    </div>-->
+
         <div class="row gap-2">
           <div class="col-lg">
             <div class="ratio ratio-16x9">
@@ -74,5 +95,17 @@ menu: 'Our Works'
 <div class="vimeo-video">
 	<iframe src="https://player.vimeo.com/video/709410747?h=4f7a827388&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
 </div>-->
+
+<style>
+    .zoomable{
+        transition-property: all;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 300ms;
+        transition-timing-function: ease-in-out;
+    }
+    .zoomable:hover{
+        scale:105%;
+    }
+</style>
 
 <script src="https://player.vimeo.com/api/player.js"></script>

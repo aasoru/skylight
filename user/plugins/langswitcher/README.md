@@ -79,9 +79,6 @@ Simply copy the `user/plugins/langswitcher/langswitcher.yaml` into `user/config/
 ```yaml
 enabled: true
 built_in_css: true
-translated_urls: true
-untranslated_pages_behavior: none
-language_display: long
 ```
 
 Options are pretty self explanatory.

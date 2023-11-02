@@ -3,7 +3,7 @@
 /**
  * @package    Grav\Common\Data
  *
- * @copyright  Copyright (c) 2015 - 2023 Trilby Media, LLC. All rights reserved.
+ * @copyright  Copyright (c) 2015 - 2022 Trilby Media, LLC. All rights reserved.
  * @license    MIT License; see LICENSE file for details.
  */
 
@@ -515,7 +515,7 @@ class Blueprint extends BlueprintForm
             $success = $this->resolveActions($user, $actions);
         }
         if (!$success) {
-            static::addPropertyRecursive($field, 'validate', ['ignore' => true]);
+            $this->addPropertyRecursive($field, 'validate', ['ignore' => true]);
         }
     }
 
@@ -566,7 +566,7 @@ class Blueprint extends BlueprintForm
         }
 
         if ($matches) {
-            static::addPropertyRecursive($field, 'validate', ['ignore' => true]);
+            $this->addPropertyRecursive($field, 'validate', ['ignore' => true]);
             return;
         }
     }
@@ -577,7 +577,7 @@ class Blueprint extends BlueprintForm
      * @param mixed $value
      * @return void
      */
-    public static function addPropertyRecursive(array &$field, $property, $value)
+    protected function addPropertyRecursive(array &$field, $property, $value)
     {
         if (is_array($value) && isset($field[$property]) && is_array($field[$property])) {
             $field[$property] = array_merge_recursive($field[$property], $value);
@@ -587,7 +587,7 @@ class Blueprint extends BlueprintForm
 
         if (!empty($field['fields'])) {
             foreach ($field['fields'] as $key => &$child) {
-                static::addPropertyRecursive($child, $property, $value);
+                $this->addPropertyRecursive($child, $property, $value);
             }
         }
     }

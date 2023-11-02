@@ -3,7 +3,7 @@
 /**
  * @package    Grav\Common
  *
- * @copyright  Copyright (c) 2015 - 2023 Trilby Media, LLC. All rights reserved.
+ * @copyright  Copyright (c) 2015 - 2022 Trilby Media, LLC. All rights reserved.
  * @license    MIT License; see LICENSE file for details.
  */
 
@@ -48,7 +48,6 @@ use Grav\Common\Service\TaskServiceProvider;
 use Grav\Common\Twig\Twig;
 use Grav\Framework\DI\Container;
 use Grav\Framework\Psr7\Response;
-use Grav\Framework\RequestHandler\Middlewares\MultipartRequestSupport;
 use Grav\Framework\RequestHandler\RequestHandler;
 use Grav\Framework\Route\Route;
 use Grav\Framework\Session\Messages;
@@ -118,7 +117,6 @@ class Grav extends Container
      * @var array All middleware processors that are processed in $this->process()
      */
     protected $middleware = [
-        'multipartRequestSupport',
         'initializeProcessor',
         'pluginsProcessor',
         'themesProcessor',
@@ -261,9 +259,6 @@ class Grav extends Container
 
         $container = new Container(
             [
-                'multipartRequestSupport' => function () {
-                    return new MultipartRequestSupport();
-                },
                 'initializeProcessor' => function () {
                     return new InitializeProcessor($this);
                 },

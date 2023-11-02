@@ -1,14 +1,14 @@
-version: '1.2'
-timestamp: 1698260404
+version: '1.1'
+timestamp: 1698534722
 count: 2
 index:
   admin:
     storage_key: admin
-    storage_timestamp: 1698259550
+    storage_timestamp: 1698533319
     key: admin
     email: admin@admin.com
   miguel:
     storage_key: miguel
-    storage_timestamp: 1698259550
+    storage_timestamp: 1698533319
     key: miguel
     email: miguel@miguel.com

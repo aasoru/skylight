@@ -1,20 +1,20 @@
-title: Grav                                 # Name of the site
-default_lang: en                            # Default language for site (potentially used by theme)
+title: Skylight Films Administration # Name of the site
+default_lang: en # Default language for site (potentially used by theme)
 
 author:
-  name: John Appleseed                      # Default author name
-  email: 'john@example.com'                 # Default author email
+  name: Aaron Sosa Ruiz # Default author name
+  email: "aasoru@gmail.com" # Default author email
 
-taxonomies: [category,tag]                  # Arbitrary list of taxonomy types
+taxonomies: [category, tag] # Arbitrary list of taxonomy types
 
 metadata:
-  description: 'My Grav Site'               # Site description
+  description: "Skylight Films Administration" # Site description
 
 summary:
-  enabled: true                             # enable or disable summary of page
-  format: short                             # long = summary delimiter will be ignored; short = use the first occurrence of delimiter or size
-  size: 300                                 # Maximum length of summary (characters)
-  delimiter: ===                            # The summary delimiter
+  enabled: true # enable or disable summary of page
+  format: short # long = summary delimiter will be ignored; short = use the first occurrence of delimiter or size
+  size: 300 # Maximum length of summary (characters)
+  delimiter: === # The summary delimiter
 
 redirects:
 #  '/redirect-test': '/'                    # Redirect test goes to home page
@@ -25,7 +25,7 @@ routes:
 #  '/new/(.*)': '/blog/$1'                  # Regex any /new/my-page URL to /blog/my-page Route
 
 blog:
-  route: '/blog'                            # Custom value added (accessible via system.blog.route)
+  route: "/blog" # Custom value added (accessible via system.blog.route)
 
 #menu:                                      # Menu Example
 #    - text: Source

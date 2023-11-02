@@ -25,6 +25,18 @@ features:
         icon: icon_4.png
         title: 'GRADING, 3D & VFX'
         description: 'Mit mehr als 20 Jahren Erfahrung wird unser VFX-cutter von vielen Filmschaffenden anerkannt, die an großen Projekten wie AVATAR oder STAR WARS gearbeitet haben.'
+    -
+        icon: icon_8.png
+        title: VIDEOBOOKS
+        description: '¿Eres actor o actriz y aún no cuentas con un videobook para promocionarte? Déjanoslo en nuestras manos y tendrás un reel promocional increíble en poco tiempo.'
+    -
+        icon: icon_7.png
+        title: 'DISEÑO GRÁFICO'
+        description: 'Si buscas un logo, un rótulo o cualquier otro tipo de diseño, contamos con varios profesionales preparados para crear las imágenes que requieras.'
+    -
+        icon: icon_9.png
+        title: 'MARKETING DE SOCIAL MEDIA'
+        description: 'Las redes sociales son cada vez más importantes a la hora de vender una marca o un producto. Contamos con un equipo profesional en gestión de redes que puede encargarse de aumentar tus visitas y ventas en un tiempo muy breve.'
 published: true
 menu: 'Unsere Dienstleistungen'
 media_order: '1.png,2.png,3.png,4.png,5.png,6.png,icon_1.png,icon_2.png,icon_3.png,icon_4.png,icon_5.png,icon_6.png'
