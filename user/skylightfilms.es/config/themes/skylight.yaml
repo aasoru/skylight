@@ -3,15 +3,15 @@ favicon:
   user/themes/skylight/images/favicon_128x128.png:
     name: favicon_128x128.png
     type: image/png
-    size: 14036
+    size: 6279
     path: user/themes/skylight/images/favicon_128x128.png
 logo:
-  'user/themes/skylight/images/skylight horizontal_w_300.png':
-    name: 'skylight horizontal_w_300.png'
+  user/themes/skylight/images/logo_300.png:
+    name: logo_300.png
     type: image/png
-    size: 22701
-    path: 'user/themes/skylight/images/skylight horizontal_w_300.png'
-left_footer: '&copy; 2023 COPYRIGHT - SkyLight Films'
+    size: 9275
+    path: user/themes/skylight/images/logo_300.png
+left_footer: '&copy; 2024 COPYRIGHT - Skylight Films'
 right_footer: '<a href="https://aaronsosa.org" target="_blank" rel="noopener noreferrer">DESIGNED BY Aaron S.</a>'
 blog_thumbnail_width: 600
 blog_thumbnail_height: 450

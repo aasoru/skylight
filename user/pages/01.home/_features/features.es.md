@@ -3,11 +3,11 @@ title: 'Nuestros servicios'
 features:
     -
         icon: icon_5.png
-        title: 'ADVERTISING SPOTS'
-        description: 'Preparados para llevar tu marca a la televisión, redes sociales o incluso los cines te ofrecemos realizar la producción desde la A hasta la Z.'
+        title: 'SPOTS PUBLICITARIOS'
+        description: '¿Deseas llevar tu marca a la televisión, las redes sociales o incluso a los cines? Te ofrecemos la realización completa desde la A hasta la Z.'
     -
         icon: icon_1.png
-        title: PHOTOGRAPHY
+        title: FOTOGRAFÍA
         description: 'Puedes contar con nuestro equipo profesional de fotografía para eventos de todo tipo, portadas de revistas, foto fija de inmobiliario, etc.'
     -
         icon: icon_3.png
@@ -15,24 +15,24 @@ features:
         description: ' Tanto para producciones menores como lyric-videos como para proyectos mayores te ofrecemos la mejor resolución para acompañar tu música.'
     -
         icon: icon_2.png
-        title: SHORT-FILMS
-        description: 'Si tienes una idea o un guion y siempre lo has querido llevar a la gran pantalla, contamos con el equipo técnico y todo el material para hacer realidad tu sueño.'
+        title: CORTOMETRAJES
+        description: 'Si tienes una idea o un guion y siempre lo has querido llevar a la gran pantalla, contamos con el equipo técnico y todo el material para hacer tu sueño realidad.'
     -
         icon: icon_6.png
-        title: 'WEDDING SPOTS'
-        description: ' No solamente cubrimos bodas fotográficamente, sino que te ofrecemos realizarte un vídeo recopilatorio de tu día más especial.'
+        title: 'VÍDEOS DE BODA'
+        description: 'El día más especial de tu vida se merece el mejor trato en imágenes posible, y es justo lo que te brindaremos tanto fotográficamente como en vídeo.'
     -
         icon: icon_4.png
         title: 'GRADING, 3D & VFX'
-        description: 'Con más de 20 años de experiencia en el sector, contamos con un editor profesional reconocido por trabajadores de películas como Avatar, Star Wars y mucho más.'
+        description: 'Con más de 20 años de experiencia en el sector, contamos con un un equipo reconocido por trabajados en películas como "Avatar" o "Star Wars".'
     -
         icon: icon_8.png
         title: VIDEOBOOKS
-        description: '¿Eres actor o actriz y aún no cuentas con un videobook para promocionarte? Déjanoslo en nuestras manos y tendrás un reel promocional increíble en poco tiempo.'
+        description: '¿Eres actor/actriz y aún no cuentas con un videobook para promocionarte? Déjalo en nuestras manos y tendrás un reel increíble en poco tiempo.'
     -
         icon: icon_7.png
         title: 'DISEÑO GRÁFICO'
-        description: 'Si buscas un logo, un rótulo o cualquier otro tipo de diseño, contamos con varios profesionales preparados para crear las imágenes que requieras.'
+        description: 'Si buscas un logo, un rótulo o quieres tener tu propia página web, contamos con varios profesionales disponibles para lo que necesitas.'
     -
         icon: icon_9.png
         title: 'MARKETING DE SOCIAL MEDIA'
@@ -41,4 +41,4 @@ published: true
 menu: 'Nuestros Servicios'
 ---
 
-**Skylight Films** nació con la idea de prestar servicios audiovisuales para la ejecución final de tus ideas. **Tú propones el concepto y nosotros el trabajo de calidad.**
+<p class="features-subtitle"><strong>Skylight Films</strong> nació con la idea de prestar servicios audiovisuales para la ejecución final de tus ideas. <strong>Tú propones el concepto y nosotros el trabajo de calidad.</strong>

@@ -1,6 +1,7 @@
 ---
-title: Gallery
-published: false
+title: Editoriales
+published: true
+menu: Editoriales
 ---
 
 [gallery]

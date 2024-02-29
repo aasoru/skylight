@@ -1,7 +1,7 @@
 ---
-title: Gallery
+title: Editorials
 published: true
-menu: Gallery
+menu: Editorials
 media_order: 'different_1.jpg,different_2.jpg,different_3.jpg,escuela_siming_1.jpg,escuela_siming_2.jpg,gentleman_1.jpg,gentleman_2.jpg,gentleman_3.jpg,liberty_1.jpg,liberty_2.jpg,liberty_3.jpg,liberty_4.jpg,lonely_1.jpg,lonely_2.jpg,lonely_3.jpg'
 ---
 

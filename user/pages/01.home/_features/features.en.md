@@ -4,7 +4,7 @@ features:
     -
         icon: icon_5.png
         title: 'ADVERTISING SPOTS'
-        description: 'Ready to take your brand to the TV, social networks or even the cinemas, we offer you to carry out the production of your idea from the beginning till the end.'
+        description: 'Do you want to take your brand to television, social media or even the cinemas? We offer you the complete implementation from for it.'
     -
         icon: icon_1.png
         title: PHOTOGRAPHY
@@ -20,26 +20,26 @@ features:
     -
         icon: icon_6.png
         title: 'WEDDING SPOTS'
-        description: 'We not only cover your wedding photos, but we also offer you the creation of a compilation video for your most special day.'
+        description: 'The most special day of your life deserves the best possible treatment in images, and that''s just what we''ll give you both photographically and on video.'
     -
         icon: icon_4.png
         title: 'GRADING, 3D & VFX'
-        description: 'With more tan 20 years of experience in the sector, our VFX artist is recognized by many film workers who worked on big projects such as AVATAR or STAR WARS.'
+        description: 'With more than 20 years of experience in the sector, we have a team recognised for their work on films such as "Avatar" and "Star Wars".'
     -
         icon: icon_8.png
         title: VIDEOBOOKS
-        description: '¿Eres actor o actriz y aún no cuentas con un videobook para promocionarte? Déjanoslo en nuestras manos y tendrás un reel promocional increíble en poco tiempo.'
+        description: 'Are you an actor/actress and you still don''t have a videobook to promote yourself? Leave it in our hands and you will have an amazing reel in no time.'
     -
         icon: icon_7.png
-        title: 'DISEÑO GRÁFICO'
-        description: 'Si buscas un logo, un rótulo o cualquier otro tipo de diseño, contamos con varios profesionales preparados para crear las imágenes que requieras.'
+        title: 'GRAPHIC DESIGN'
+        description: 'If you are looking for a logo, a label or want to have your own website, we have several professionals available for what you need.'
     -
         icon: icon_9.png
-        title: 'MARKETING DE SOCIAL MEDIA'
-        description: 'Las redes sociales son cada vez más importantes a la hora de vender una marca o un producto. Contamos con un equipo profesional en gestión de redes que puede encargarse de aumentar tus visitas y ventas en un tiempo muy breve.'
+        title: 'SOCIAL MEDIA MARKETING'
+        description: 'Social networks are becoming increasingly important when it comes to selling a brand or product. We have a professional team in network management that can take care of increasing your visits and sales in a very short time.'
 published: true
 menu: 'Our Services'
 media_order: '1.png,2.png,3.png,4.png,5.png,6.png,icon_1.png,icon_2.png,icon_3.png,icon_4.png,icon_5.png,icon_6.png,icon_7.png,icon_8.png,icon_9.png'
 ---
 
-**Skylight Films** was born on the idea of renting audiovisual services and crew for the production and final execution of your product. **You provide the concept, we provide the work.**
+<p class="features-subtitle"><strong>Skylight Films</strong> was born on the idea of renting audiovisual services and crew for the production and final execution of your product. <strong>You provide the concept, we provide the work.</strong></p>
