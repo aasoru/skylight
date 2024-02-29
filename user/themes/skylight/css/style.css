@@ -66,6 +66,7 @@ span.line {
 }
 header,
 .header {
+	background: #2a2a2a;
 	position: absolute;
 	left: 0;
 	right: 0;
@@ -295,8 +296,13 @@ nav ul li a:hover {
 	font-weight: 400;
 	color: #fcb400;
 }
+.features p.features-subtitle {
+	text-align: center;
+}
 .features p {
 	padding: 5px 0 70px;
+	text-align: justify;
+	text-wrap: pretty;
 }
 .joinnow {
 	padding: 70px 0;
@@ -431,8 +437,8 @@ button.button {
 }
 .cta3 h2{text-align:left;}
 /*.cta3 span.line{margin:30px 0;}*/
-.cta3 a{margin:40px 0 0; text-align:center;}
-.cta3 a:hover{background:#5a5a5a; transition:all 0.5s;}
+/*.cta3 a{margin:40px 0 0; text-align:center;}
+.cta3 a:hover{background:#5a5a5a; transition:all 0.5s;}*/
 .safariimg{position:absolute;     top: 7%;
     left: 3%;
     width: 43%;}
@@ -884,7 +890,7 @@ a {
 .video_bg{
 	position: relative;
 	z-index: 1;
-	margin-top: -48rem;
+	margin-top: -41rem;
 }
 
 .video_bg video{
@@ -1001,4 +1007,26 @@ a {
 		margin: 0 15rem;
 		padding: 40% 0 0 0;
 	}
+}
+
+.vp-center{
+	display:block !important;
+}
+
+.zoomable {
+	transition-property: all;
+	transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+	transition-duration: 300ms;
+	transition-timing-function: ease-in-out;
+}
+
+.zoomable:hover {
+	scale: 105%;
+}
+
+.our_works .vimeo_link{
+	width: auto;
+	height: auto;
+	display: inline;
+	
 }
